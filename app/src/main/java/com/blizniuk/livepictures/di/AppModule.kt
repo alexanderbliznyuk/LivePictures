@@ -45,12 +45,18 @@ class AppModule {
         }
     }
 
+
     @Singleton
     @Provides
-    fun providesFramesRepository(appDatabase: AppDatabase, json: Json): FramesRepository {
+    fun providesFramesRepository(
+        appDatabase: AppDatabase,
+        json: Json,
+        settingsRepository: SettingsRepository
+    ): FramesRepository {
         return FramesRepositoryImpl(
             frameDao = appDatabase.framesDao(),
-            json = json
+            json = json,
+            settingsRepository = settingsRepository
         )
     }
 }

@@ -1,6 +1,5 @@
 package com.blizniuk.livepictures.domain.settings
 
-import android.graphics.Color
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {

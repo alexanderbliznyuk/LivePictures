@@ -11,10 +11,10 @@ import com.blizniuk.livepictures.data.graphics.FrameDb
 abstract class FrameDao {
 
     @Upsert
-    abstract suspend fun insertInternal(frameDb: FrameDb)
+    protected abstract suspend fun insertInternal(frameDb: FrameDb): Long
 
     @Query("DELETE FROM frames WHERE id = :id")
-    abstract suspend fun deleteInternal(id: Long)
+    protected abstract suspend fun deleteInternal(id: Long)
 
     @Query("DELETE FROM frames")
     abstract suspend fun deleteAll()
@@ -25,18 +25,25 @@ abstract class FrameDao {
     @Query("UPDATE frames SET frame_index = frame_index - 1 WHERE frame_index >= :initialIndex")
     abstract suspend fun decrementIndexes(initialIndex: Long)
 
+    @Query("SELECT COUNT(*) FROM frames")
+    abstract suspend fun count(): Long
+
     @Transaction
-    suspend fun insertNewFrame(frameDb: FrameDb) {
+    open suspend fun insertNewFrame(frameDb: FrameDb): Long {
         incrementIndexes(frameDb.index)
-        insertInternal(frameDb)
+        return insertInternal(frameDb)
     }
 
     @Transaction
-    suspend fun deleteFrame(frameDb: FrameDb) {
-        deleteInternal(frameDb.id)
-        decrementIndexes(frameDb.index)
+    open suspend fun deleteFrame(id: Long, index: Long) {
+        deleteInternal(id)
+        decrementIndexes(index)
+    }
+
+    suspend fun updateFrame(frameDb: FrameDb) {
+        insertNewFrame(frameDb)
     }
 
     @Query("SELECT * FROM frames ORDER BY frame_index")
-    abstract fun framePages(): PagingSource<Long, FrameDb>
+    abstract fun framePages(): PagingSource<Int, FrameDb>
 }
