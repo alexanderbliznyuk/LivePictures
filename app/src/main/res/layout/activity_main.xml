@@ -1,183 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/homeContent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/undo"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_undo"
-        app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-        app:layout_constraintStart_toStartOf="@id/startEdge"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/redo"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_redo"
-        app:layout_constraintStart_toEndOf="@id/undo"
-        app:layout_constraintTop_toTopOf="@id/undo" />
+        <ImageView
+            android:id="@+id/undo"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_undo"
+            app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
+            app:layout_constraintStart_toStartOf="@id/startEdge"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/deleteFrame"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_delete_frame"
-        app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-        app:layout_constraintEnd_toStartOf="@id/newFrame"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/redo"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_redo"
+            app:layout_constraintStart_toEndOf="@id/undo"
+            app:layout_constraintTop_toTopOf="@id/undo" />
 
-    <ImageView
-        android:id="@+id/newFrame"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:src="@drawable/ic_new_frame"
-        app:layout_constraintEnd_toStartOf="@id/frameList"
-        app:layout_constraintStart_toEndOf="@id/deleteFrame"
-        app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+        <ImageView
+            android:id="@+id/deleteFrame"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete_frame"
+            app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
+            app:layout_constraintEnd_toStartOf="@id/newFrame"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/frameList"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_frame_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/newFrame"
-        app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+        <ImageView
+            android:id="@+id/newFrame"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:src="@drawable/ic_new_frame"
+            app:layout_constraintEnd_toStartOf="@id/frameList"
+            app:layout_constraintStart_toEndOf="@id/deleteFrame"
+            app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+
+        <ImageView
+            android:id="@+id/frameList"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_frame_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/newFrame"
+            app:layout_constraintTop_toTopOf="@id/deleteFrame" />
 
 
-    <ImageView
-        android:id="@+id/play"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_play"
-        app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-        app:layout_constraintEnd_toEndOf="@id/endEdge"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/play"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
+            app:layout_constraintEnd_toEndOf="@id/endEdge"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/topContainerBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="56dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/topContainerBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="56dp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/bottomContainerTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="56dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottomContainerTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="56dp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/startEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="16dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/startEdge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/endEdge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="16dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/endEdge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
 
-    <ImageView
-        android:id="@+id/canvasBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/canvas"
-        app:layout_constraintBottom_toTopOf="@id/bottomContainerTop"
-        app:layout_constraintEnd_toEndOf="@id/endEdge"
-        app:layout_constraintStart_toStartOf="@id/startEdge"
-        app:layout_constraintTop_toBottomOf="@id/topContainerBottom" />
+        <ImageView
+            android:id="@+id/canvasBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/canvas"
+            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop"
+            app:layout_constraintEnd_toEndOf="@id/endEdge"
+            app:layout_constraintStart_toStartOf="@id/startEdge"
+            app:layout_constraintTop_toBottomOf="@id/topContainerBottom" />
 
-    <com.blizniuk.livepictures.view.CanvasView
-        android:id="@+id/canvasView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/canvasBackground"
-        app:layout_constraintEnd_toEndOf="@id/canvasBackground"
-        app:layout_constraintStart_toStartOf="@id/canvasBackground"
-        app:layout_constraintTop_toTopOf="@id/canvasBackground" />
+        <com.blizniuk.livepictures.view.CanvasView
+            android:id="@+id/canvasView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/canvasBackground"
+            app:layout_constraintEnd_toEndOf="@id/canvasBackground"
+            app:layout_constraintStart_toStartOf="@id/canvasBackground"
+            app:layout_constraintTop_toTopOf="@id/canvasBackground" />
 
-    <ImageView
-        android:id="@+id/pencil"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:src="@drawable/ic_tool_pencil"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/erase"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bottomContainerTop" />
+        <ImageView
+            android:id="@+id/pencil"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_pencil"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/erase"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bottomContainerTop" />
 
-    <ImageView
-        android:id="@+id/erase"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:src="@drawable/ic_tool_erase"
-        app:layout_constraintEnd_toStartOf="@id/toolbox"
-        app:layout_constraintStart_toEndOf="@id/pencil"
-        app:layout_constraintTop_toTopOf="@id/pencil" />
+        <ImageView
+            android:id="@+id/erase"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_erase"
+            app:layout_constraintEnd_toStartOf="@id/toolbox"
+            app:layout_constraintStart_toEndOf="@id/pencil"
+            app:layout_constraintTop_toTopOf="@id/pencil" />
 
-    <ImageView
-        android:id="@+id/toolbox"
-        style="@style/ToolButton.Tintable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:src="@drawable/ic_tool_toolbox"
-        app:layout_constraintEnd_toStartOf="@id/colorPicker"
-        app:layout_constraintStart_toEndOf="@id/erase"
-        app:layout_constraintTop_toTopOf="@id/pencil" />
+        <ImageView
+            android:id="@+id/toolbox"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_toolbox"
+            app:layout_constraintEnd_toStartOf="@id/colorPicker"
+            app:layout_constraintStart_toEndOf="@id/erase"
+            app:layout_constraintTop_toTopOf="@id/pencil" />
+
+        <FrameLayout
+            android:id="@+id/colorPicker"
+            style="@style/ToolButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolbox"
+            app:layout_constraintTop_toTopOf="@id/pencil">
+
+            <ImageView
+                android:id="@+id/chosenColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/color_picker_tool_color" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/color_picker_tool_border" />
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <FrameLayout
-        android:id="@+id/colorPicker"
-        style="@style/ToolButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/toolbox"
-        app:layout_constraintTop_toTopOf="@id/pencil">
+        android:id="@+id/loaderContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/loader_overlay"
+        android:clickable="true">
 
-        <ImageView
-            android:id="@+id/chosenColor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/color_picker_tool_color" />
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_gravity="center"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/color_picker_tool_border" />
     </FrameLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

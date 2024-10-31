@@ -18,26 +18,30 @@ class SettingsRepositoryImpl(
     }
 
     override suspend fun setDefaultFrameDurationMs(value: Long) {
-        update(getSettings().copy(defaultFrameDurationMs = value))
+        update(getSettingsInternal().copy(defaultFrameDurationMs = value))
     }
 
     override suspend fun setPathThicknessLevel(value: Float) {
-        update(getSettings().copy(pathThicknessLevel = value))
+        update(getSettingsInternal().copy(pathThicknessLevel = value))
     }
 
     override suspend fun setEraseToolThicknessLevel(value: Float) {
-        update(getSettings().copy(eraseToolThicknessLevel = value))
+        update(getSettingsInternal().copy(eraseToolThicknessLevel = value))
     }
 
     override suspend fun setSelectedColor(value: Int) {
-        update(getSettings().copy(selectedColor = value))
+        update(getSettingsInternal().copy(selectedColor = value))
     }
 
     override suspend fun setCurrentFrameId(value: Long) {
-        update(getSettings().copy(currentFrameId = value))
+        update(getSettingsInternal().copy(currentFrameId = value))
     }
 
-    private suspend fun getSettings(): AppSettingsDb {
+    override suspend fun getSetting(): AppSettings {
+        return getSettingsInternal()
+    }
+
+    private suspend fun getSettingsInternal(): AppSettingsDb {
         return settingsDao.appSettings() ?: DefaultSettings
     }
 
@@ -48,10 +52,10 @@ class SettingsRepositoryImpl(
     private companion object {
         val DefaultSettings = AppSettingsDb(
             defaultFrameDurationMs = 100,
-            pathThicknessLevel = 1F,
-            eraseToolThicknessLevel = 4F,
+            pathThicknessLevel = 2F,
+            eraseToolThicknessLevel = 10F,
             selectedColor = Color.BLUE,
-            currentFrameId = 1
+            currentFrameId = -1
         )
     }
 }

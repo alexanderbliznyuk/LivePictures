@@ -3,7 +3,11 @@
     <style name="Base.Theme.LivePictures" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
     </style>
 
-    <style name="Theme.LivePictures" parent="Base.Theme.LivePictures" />
+    <style name="Theme.LivePictures" parent="Base.Theme.LivePictures">
+        <item name="colorPrimary">@color/accent_color</item>
+        <item name="colorSecondary">@color/accent_color</item>
+    </style>
 </resources>

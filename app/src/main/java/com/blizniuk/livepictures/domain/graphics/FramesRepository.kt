@@ -7,7 +7,6 @@ interface FramesRepository {
     suspend fun updateFrame(frame: Frame)
     suspend fun deleteFrame(frame: Frame)
     suspend fun deleteAllFrames()
-
-
-
+    suspend fun getFrameById(id: Long): Frame?
+    suspend fun getLastFrame(): Frame
 }

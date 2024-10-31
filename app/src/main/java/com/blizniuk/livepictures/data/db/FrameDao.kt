@@ -28,6 +28,12 @@ abstract class FrameDao {
     @Query("SELECT COUNT(*) FROM frames")
     abstract suspend fun count(): Long
 
+    @Query("SELECT * FROM frames WHERE id = :id")
+    abstract suspend fun getFrameById(id: Long): FrameDb?
+
+    @Query("SELECT * FROM frames ORDER BY frame_index DESC LIMIT 1")
+    abstract suspend fun getLastFrame(): FrameDb?
+
     @Transaction
     open suspend fun insertNewFrame(frameDb: FrameDb): Long {
         incrementIndexes(frameDb.index)

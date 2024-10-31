@@ -6,6 +6,8 @@ interface SettingsRepository {
 
     fun currentAppSettings(): Flow<AppSettings>
 
+    suspend fun getSetting(): AppSettings
+
     suspend fun setDefaultFrameDurationMs(value: Long)
     suspend fun setPathThicknessLevel(value: Float)
     suspend fun setEraseToolThicknessLevel(value: Float)
