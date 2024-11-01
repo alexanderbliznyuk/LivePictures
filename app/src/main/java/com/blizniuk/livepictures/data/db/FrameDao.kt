@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.blizniuk.livepictures.data.graphics.FrameDb
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class FrameDao {
@@ -28,6 +29,9 @@ abstract class FrameDao {
     @Query("SELECT COUNT(*) FROM frames")
     abstract suspend fun count(): Long
 
+    @Query("SELECT COUNT(*) FROM frames")
+    abstract fun framesCount(): Flow<Long>
+
     @Query("SELECT * FROM frames WHERE id = :id")
     abstract suspend fun getFrameById(id: Long): FrameDb?
 
@@ -46,8 +50,17 @@ abstract class FrameDao {
         decrementIndexes(index)
     }
 
+    @Query("SELECT * FROM frames WHERE frame_index <= :index ORDER BY frame_index DESC LIMIT 1")
+    abstract suspend fun getFrameByIndex(index: Long): FrameDb?
+
+    @Query("SELECT * FROM frames WHERE frame_index > :index ORDER BY frame_index LIMIT 1")
+    abstract suspend fun getNextFrame(index: Long): FrameDb?
+
+    @Query("SELECT * FROM frames WHERE frame_index < :index ORDER BY frame_index DESC LIMIT 1")
+    abstract suspend fun getPrevFrame(index: Long): FrameDb?
+
     suspend fun updateFrame(frameDb: FrameDb) {
-        insertNewFrame(frameDb)
+        insertInternal(frameDb)
     }
 
     @Query("SELECT * FROM frames ORDER BY frame_index")

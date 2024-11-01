@@ -29,6 +29,7 @@ class FramesRepositoryImpl(
         )
 
         val id = frameDao.insertNewFrame(mapFromFrame(newFrame))
+        settingsRepository.setCurrentFrameId(id)
         return newFrame.copy(id = id)
     }
 
@@ -36,16 +37,26 @@ class FramesRepositoryImpl(
         frameDao.updateFrame(mapFromFrame(frame))
     }
 
-    override suspend fun deleteFrame(frame: Frame) {
+    override suspend fun deleteFrame(frame: Frame): Frame {
         frameDao.deleteFrame(frame.id, frame.index)
+        val frameDb = frameDao.getFrameByIndex(frame.index)
+        val currentFrame = if (frameDb != null) {
+            settingsRepository.setCurrentFrameId(frameDb.id)
+            mapFromDb(frameDb)
+        } else {
+            newFrame()
+        }
+
+        return currentFrame
     }
 
-    override suspend fun deleteAllFrames() {
+    override suspend fun deleteAllFrames(): Frame {
         frameDao.deleteAll()
+        return newFrame()
     }
 
     override suspend fun getFrameById(id: Long): Frame? {
-        val frame = frameDao.getFrameById(id) ?: frameDao.getLastFrame() ?: return null
+        val frame = frameDao.getFrameById(id) ?: return null
         return mapFromDb(frame)
     }
 
@@ -64,6 +75,17 @@ class FramesRepositoryImpl(
         return newFrame
     }
 
+    override fun framesCount(): Flow<Long> {
+        return frameDao.framesCount()
+    }
+
+    override suspend fun getPreviousFrame(frame: Frame): Frame? {
+         return frameDao.getPrevFrame(frame.index)?.toFrame()
+    }
+
+    override suspend fun getNextFrame(frame: Frame): Frame? {
+        return frameDao.getNextFrame(frame.index)?.toFrame()
+    }
 
     fun framePages(): Flow<PagingData<Frame>> {
         return Pager(PagingConfig(pageSize = 20)) {
@@ -73,6 +95,10 @@ class FramesRepositoryImpl(
             .map { it.map { frame -> mapFromDb(frame) } }
     }
 
+
+    private fun FrameDb.toFrame(): Frame {
+        return mapFromDb(this)
+    }
     private fun mapFromDb(frameDb: FrameDb): Frame {
         val frameData = json.decodeFromString<FrameData>(frameDb.data)
 

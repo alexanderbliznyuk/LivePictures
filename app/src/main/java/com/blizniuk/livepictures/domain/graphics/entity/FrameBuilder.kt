@@ -12,7 +12,11 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     private val cmds: MutableList<DrawCmd> = frame.drawCmds.toMutableList()
     private var currentCmd: DrawCmd? = null
     private var toolData: ToolData? = null
-    fun setToolData(toolData: ToolData) {
+
+    val index: Long
+        get() = frame.index
+
+    fun setToolData(toolData: ToolData?) {
         this.toolData = toolData
     }
 
@@ -63,6 +67,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
             is ToolData.Erase -> ErasePathCmd(
                 thicknessLevel = data.thicknessLevel
             )
+
             null -> return
         }
     }

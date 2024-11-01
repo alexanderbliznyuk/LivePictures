@@ -12,4 +12,6 @@
     <string name="tooltip_tool_erase">Erase tool</string>
     <string name="tooltip_tool_toolbox">Shape picker</string>
     <string name="tooltip_tool_color_picker">Color Picker</string>
+    <string name="tooltip_next_frame">Next Frame</string>
+    <string name="tooltip_prev_frame">Previous Frame</string>
 </resources>

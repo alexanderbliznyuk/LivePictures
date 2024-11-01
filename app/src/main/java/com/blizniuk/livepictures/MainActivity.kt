@@ -14,6 +14,8 @@ import com.blizniuk.livepictures.util.RoundCornersOutlineProvider
 import com.blizniuk.livepictures.util.repeatOnStart
 import com.blizniuk.livepictures.viewmodel.CoordinatorViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -47,6 +49,8 @@ class MainActivity : AppCompatActivity() {
             initTools()
             initLoader()
             initCanvasView()
+            initFrameCounter()
+            initTopCommands()
         }
     }
 
@@ -86,10 +90,40 @@ class MainActivity : AppCompatActivity() {
     private fun initCanvasView() {
         binding.apply {
             repeatOnStart {
-                viewModel.currentFrame.collect { frame ->
-                    canvasView.frameBuilder = frame
+                launch {
+                    viewModel.currentFrame.collect { frame ->
+                        canvasView.frameBuilder = frame
+                    }
+                }
+
+                launch {
+                    viewModel.previousFrame.collect { frame ->
+                        canvasView.previousFrame = frame
+                    }
                 }
             }
+        }
+    }
+
+    private fun initFrameCounter() {
+        binding.apply {
+            prevFrame.setOnClickListener { viewModel.prevFrame() }
+            nextFrame.setOnClickListener { viewModel.nextFrame() }
+            repeatOnStart {
+                viewModel.counterState.collect { state ->
+                    prevFrame.isEnabled = state.prevEnabled
+                    nextFrame.isEnabled = state.nextEnabled
+                    totalFrames.text = state.total
+                    currentFrameIndex.text = state.currentIndex
+                }
+            }
+        }
+    }
+
+    private fun initTopCommands() {
+        binding.apply {
+            deleteFrame.setOnClickListener { viewModel.deleteCurrentFrame() }
+            newFrame.setOnClickListener { viewModel.newFrame() }
         }
     }
 }

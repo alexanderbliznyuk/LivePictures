@@ -109,6 +109,54 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp" />
 
+
+
+        <ImageView
+            android:id="@+id/prevFrame"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_prev_frame"
+            app:layout_constraintTop_toBottomOf="@id/deleteFrame"
+            app:layout_constraintEnd_toStartOf="@id/currentFrameIndex"/>
+
+        <TextView
+            android:id="@+id/currentFrameIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/frameCounterDivider"
+            app:layout_constraintTop_toTopOf="@id/frameCounterDivider"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/frameCounterDivider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/prevFrame"
+            app:layout_constraintBottom_toBottomOf="@id/prevFrame"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/totalFrames"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/frameCounterDivider"
+            app:layout_constraintTop_toTopOf="@id/frameCounterDivider"
+            tools:text="1234" />
+
+        <ImageView
+            android:id="@+id/nextFrame"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_next_frame"
+            android:tooltipText="@string/tooltip_next_frame"
+            app:layout_constraintTop_toTopOf="@id/prevFrame"
+            app:layout_constraintStart_toEndOf="@id/totalFrames"/>
+
         <ImageView
             android:id="@+id/canvasBackground"
             android:layout_width="0dp"
@@ -151,8 +199,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
-            android:tooltipText="@string/tooltip_tool_erase"
             android:src="@drawable/ic_tool_erase"
+            android:tooltipText="@string/tooltip_tool_erase"
             app:layout_constraintEnd_toStartOf="@id/toolbox"
             app:layout_constraintStart_toEndOf="@id/pencil"
             app:layout_constraintTop_toTopOf="@id/pencil" />
@@ -209,7 +257,7 @@
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="76dp"
             android:layout_height="76dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
     </FrameLayout>
 </FrameLayout>
