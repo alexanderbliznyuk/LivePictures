@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_undo"
+            android:tooltipText="@string/tooltip_undo"
             app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
             app:layout_constraintStart_toStartOf="@id/startEdge"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_redo"
+            android:tooltipText="@string/tooltip_redo"
             app:layout_constraintStart_toEndOf="@id/undo"
             app:layout_constraintTop_toTopOf="@id/undo" />
 
@@ -37,6 +39,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_delete_frame"
+            android:tooltipText="@string/tooltip_delete_frame"
             app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
             app:layout_constraintEnd_toStartOf="@id/newFrame"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -50,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:src="@drawable/ic_new_frame"
+            android:tooltipText="@string/tooltip_new_frame"
             app:layout_constraintEnd_toStartOf="@id/frameList"
             app:layout_constraintStart_toEndOf="@id/deleteFrame"
             app:layout_constraintTop_toTopOf="@id/deleteFrame" />
@@ -60,6 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_frame_list"
+            android:tooltipText="@string/tooltip_show_frames"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/newFrame"
             app:layout_constraintTop_toTopOf="@id/deleteFrame" />
@@ -71,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_play"
+            android:tooltipText="@string/tooltip_start_animation"
             app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
             app:layout_constraintEnd_toEndOf="@id/endEdge"
             app:layout_constraintTop_toTopOf="parent" />
@@ -132,6 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
             android:src="@drawable/ic_tool_pencil"
+            android:tooltipText="@string/tooltip_tool_pencil"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/erase"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -144,6 +151,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
+            android:tooltipText="@string/tooltip_tool_erase"
             android:src="@drawable/ic_tool_erase"
             app:layout_constraintEnd_toStartOf="@id/toolbox"
             app:layout_constraintStart_toEndOf="@id/pencil"
@@ -156,6 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
             android:src="@drawable/ic_tool_toolbox"
+            android:tooltipText="@string/tooltip_tool_toolbox"
             app:layout_constraintEnd_toStartOf="@id/colorPicker"
             app:layout_constraintStart_toEndOf="@id/erase"
             app:layout_constraintTop_toTopOf="@id/pencil" />
@@ -166,6 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
+            android:tooltipText="@string/tooltip_tool_color_picker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/toolbox"
             app:layout_constraintTop_toTopOf="@id/pencil">

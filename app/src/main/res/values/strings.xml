@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">LivePictures</string>
+
+    <string name="tooltip_undo">Undo</string>
+    <string name="tooltip_redo">Redo</string>
+    <string name="tooltip_delete_frame">Delete frame</string>
+    <string name="tooltip_new_frame">New Frame</string>
+    <string name="tooltip_show_frames">Show frames</string>
+    <string name="tooltip_start_animation">Start animation</string>
+    <string name="tooltip_stop_animation">Stop animation</string>
+    <string name="tooltip_tool_pencil">Pencil</string>
+    <string name="tooltip_tool_erase">Erase tool</string>
+    <string name="tooltip_tool_toolbox">Shape picker</string>
+    <string name="tooltip_tool_color_picker">Color Picker</string>
 </resources>
