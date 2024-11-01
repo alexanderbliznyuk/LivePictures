@@ -11,7 +11,6 @@ import com.blizniuk.livepictures.domain.graphics.entity.Point
 import com.blizniuk.livepictures.domain.graphics.entity.RenderContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.math.roundToInt
 
 class ErasePathCmd(
     var thicknessLevel: Float,

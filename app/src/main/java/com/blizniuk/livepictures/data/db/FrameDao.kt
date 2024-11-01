@@ -32,8 +32,11 @@ abstract class FrameDao {
     @Query("SELECT COUNT(*) FROM frames")
     abstract fun framesCount(): Flow<Long>
 
-    @Query("SELECT * FROM frames WHERE id = :id")
+    @Query("SELECT * FROM frames WHERE id = :id LIMIT 1")
     abstract suspend fun getFrameById(id: Long): FrameDb?
+
+    @Query("SELECT frame_index FROM frames WHERE id = :id LIMIT 1")
+    abstract suspend fun getFrameIndexById(id: Long): Long?
 
     @Query("SELECT * FROM frames ORDER BY frame_index DESC LIMIT 1")
     abstract suspend fun getLastFrame(): FrameDb?

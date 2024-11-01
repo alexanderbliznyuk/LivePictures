@@ -10,7 +10,7 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".ui.home.MainActivity">
 
         <ImageView
             android:id="@+id/undo"
@@ -109,6 +109,25 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp" />
 
+        <ImageView
+            android:id="@+id/canvasBackground"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/canvas"
+            app:layout_constraintBottom_toTopOf="@id/prevFrame"
+            app:layout_constraintEnd_toEndOf="@id/endEdge"
+            app:layout_constraintStart_toStartOf="@id/startEdge"
+            app:layout_constraintTop_toBottomOf="@id/topContainerBottom" />
+
+        <com.blizniuk.livepictures.view.CanvasView
+            android:id="@+id/canvasView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/canvasBackground"
+            app:layout_constraintEnd_toEndOf="@id/canvasBackground"
+            app:layout_constraintStart_toStartOf="@id/canvasBackground"
+            app:layout_constraintTop_toTopOf="@id/canvasBackground" />
 
 
         <ImageView
@@ -117,8 +136,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_prev_frame"
-            app:layout_constraintTop_toBottomOf="@id/deleteFrame"
-            app:layout_constraintEnd_toStartOf="@id/currentFrameIndex"/>
+            android:tooltipText="@string/tooltip_prev_frame"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintEnd_toStartOf="@id/currentFrameIndex"
+            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop" />
 
         <TextView
             android:id="@+id/currentFrameIndex"
@@ -133,10 +154,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" / "
+            app:layout_constraintBottom_toBottomOf="@id/prevFrame"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/prevFrame"
-            app:layout_constraintBottom_toBottomOf="@id/prevFrame"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -154,30 +175,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_next_frame"
             android:tooltipText="@string/tooltip_next_frame"
-            app:layout_constraintTop_toTopOf="@id/prevFrame"
-            app:layout_constraintStart_toEndOf="@id/totalFrames"/>
-
-        <ImageView
-            android:id="@+id/canvasBackground"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/canvas"
-            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop"
-            app:layout_constraintEnd_toEndOf="@id/endEdge"
-            app:layout_constraintStart_toStartOf="@id/startEdge"
-            app:layout_constraintTop_toBottomOf="@id/topContainerBottom" />
-
-        <com.blizniuk.livepictures.view.CanvasView
-            android:id="@+id/canvasView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/canvasBackground"
-            app:layout_constraintEnd_toEndOf="@id/canvasBackground"
-            app:layout_constraintStart_toStartOf="@id/canvasBackground"
-            app:layout_constraintTop_toTopOf="@id/canvasBackground" />
+            app:layout_constraintStart_toEndOf="@id/totalFrames"
+            app:layout_constraintTop_toTopOf="@id/prevFrame" />
 
         <ImageView
             android:id="@+id/pencil"

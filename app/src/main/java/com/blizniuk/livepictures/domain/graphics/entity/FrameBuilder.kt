@@ -13,8 +13,18 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     private var currentCmd: DrawCmd? = null
     private var toolData: ToolData? = null
 
+    val id: Long
+        get() = frame.id
+
     val index: Long
         get() = frame.index
+
+    fun isChanged(): Boolean {
+        //TODO: override equals for cmds
+        val isChanged = frame.drawCmds != cmds
+        return isChanged
+    }
+
 
     fun setToolData(toolData: ToolData?) {
         this.toolData = toolData
@@ -35,7 +45,6 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     (currentCmd as? FreeDrawableCmd)?.newPoint(touchX, touchY)
                     onDataChangedListener?.invoke()
                 }
-
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -74,7 +83,9 @@ class FrameBuilder(private val frame: Frame) : Renderable {
 
     private fun addCmdIfPossible() {
         val cmd = currentCmd
-        if (cmd != null) cmds += cmd
+        if (cmd != null) {
+            cmds += cmd
+        }
 
         currentCmd = null
     }

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="color_picker_color_size">28dp</dimen>
-    <dimen name="round_corners_radius">20dp</dimen>
+    <dimen name="canvas_round_corners_radius">20dp</dimen>
+
+    <dimen name="frame_list_peek_height">400dp</dimen>
+    <dimen name="frame_list_item_spacing">4dp</dimen>
+
+    <dimen name="selection_border_corners_radius">8dp</dimen>
+    <dimen name="selection_border_width">3dp</dimen>
+
 </resources>

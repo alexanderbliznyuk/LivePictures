@@ -1,4 +1,4 @@
-package com.blizniuk.livepictures.viewmodel
+package com.blizniuk.livepictures.ui.home.viewmodel
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -10,6 +10,8 @@ import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
 import com.blizniuk.livepictures.domain.graphics.entity.FrameBuilder
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
+import com.blizniuk.livepictures.ui.home.state.FrameCounterState
+import com.blizniuk.livepictures.ui.home.state.LoaderUI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +33,11 @@ class CoordinatorViewModel @Inject constructor(
 
     val selectedTool = MutableStateFlow(ToolId.Pencil)
     val loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
-    val currentFrame: MutableStateFlow<FrameBuilder?> = MutableStateFlow(null)
+
+    val currentFrame: StateFlow<FrameBuilder?> = settingsRepository.currentAppSettings().map {
+        framesRepository.getFrameById(it.currentFrameId)?.toBuilder()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val previousFrame: Flow<Frame?> = currentFrame.map { builder ->
         if (builder == null) return@map null
         framesRepository.getPreviousFrame(builder.build())
@@ -66,12 +72,12 @@ class CoordinatorViewModel @Inject constructor(
             ToolId.Toolbox -> null
             ToolId.ColorPicker -> null
         }
-    }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     init {
         viewModelScope.launch {
-            currentFrame.value = framesRepository.getLastFrame().toBuilder()
+            //Ensure we have last frame
+            framesRepository.getLastFrame()
             dismissLoader()
 
             toolData.filterNotNull().collect { tool ->
@@ -93,7 +99,7 @@ class CoordinatorViewModel @Inject constructor(
     fun newFrame() {
         viewModelScope.launch {
             saveCurrentFrame()
-            currentFrame.value = framesRepository.newFrame().toBuilder()
+            framesRepository.newFrame()
         }
     }
 
@@ -101,16 +107,14 @@ class CoordinatorViewModel @Inject constructor(
         viewModelScope.launch {
             val frame = currentFrame.value?.build()
             if (frame != null) {
-                val nextFrame = framesRepository.deleteFrame(frame)
-                currentFrame.value = nextFrame.toBuilder()
+                framesRepository.deleteFrame(frame)
             }
         }
     }
 
     fun deleteAllFrames() {
         viewModelScope.launch {
-            val nextFrame = framesRepository.deleteAllFrames()
-            currentFrame.value = nextFrame.toBuilder()
+            framesRepository.deleteAllFrames()
         }
     }
 
@@ -121,7 +125,6 @@ class CoordinatorViewModel @Inject constructor(
                 val prevFrame = framesRepository.getPreviousFrame(frame)
                 if (prevFrame != null) {
                     settingsRepository.setCurrentFrameId(prevFrame.id)
-                    currentFrame.value = prevFrame.toBuilder()
                 }
             }
         }
@@ -134,15 +137,22 @@ class CoordinatorViewModel @Inject constructor(
                 val nextFrame = framesRepository.getNextFrame(frame)
                 if (nextFrame != null) {
                     settingsRepository.setCurrentFrameId(nextFrame.id)
-                    currentFrame.value = nextFrame.toBuilder()
                 }
             }
         }
     }
 
+    fun saveChanges() {
+        viewModelScope.launch {
+            saveCurrentFrame()
+        }
+    }
+
+
     private suspend fun saveCurrentFrame(): Frame? {
-        val frame = currentFrame.value?.build()
-        if (frame != null) {
+        val currentBuilder = currentFrame.value
+        val frame = currentBuilder?.build()
+        if (frame != null && currentBuilder.isChanged()) {
             framesRepository.updateFrame(frame)
         }
 
@@ -163,20 +173,12 @@ class CoordinatorViewModel @Inject constructor(
         builder.setToolData(toolData.value)
         return builder
     }
-
 }
 
 
-data class LoaderUI(
-    val text: String
-)
 
-data class FrameCounterState(
-    val total: String,
-    val currentIndex: String,
-    val prevEnabled: Boolean,
-    val nextEnabled: Boolean,
-)
+
+
 
 
 

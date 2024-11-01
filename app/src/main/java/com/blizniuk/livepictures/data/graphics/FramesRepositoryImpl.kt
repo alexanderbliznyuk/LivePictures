@@ -60,6 +60,10 @@ class FramesRepositoryImpl(
         return mapFromDb(frame)
     }
 
+    override suspend fun getFrameIndexById(id: Long): Long? {
+        return frameDao.getFrameIndexById(id)
+    }
+
     override suspend fun getLastFrame(): Frame {
         val id = settingsRepository.getSetting().currentFrameId
 
@@ -87,7 +91,7 @@ class FramesRepositoryImpl(
         return frameDao.getNextFrame(frame.index)?.toFrame()
     }
 
-    fun framePages(): Flow<PagingData<Frame>> {
+    override fun frames(initialId: Long): Flow<PagingData<Frame>> {
         return Pager(PagingConfig(pageSize = 20)) {
             frameDao.framePages()
         }

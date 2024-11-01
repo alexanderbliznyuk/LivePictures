@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">LivePictures</string>
 
+    <string name="frame_list_title">Frame List</string>
+    <string name="frame_list_item_title">Frame #%s</string>
+
     <string name="tooltip_undo">Undo</string>
     <string name="tooltip_redo">Redo</string>
     <string name="tooltip_delete_frame">Delete frame</string>

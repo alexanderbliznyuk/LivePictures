@@ -1,4 +1,4 @@
-package com.blizniuk.livepictures
+package com.blizniuk.livepictures.ui.home
 
 import android.os.Bundle
 import android.view.View
@@ -8,13 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
+import com.blizniuk.livepictures.ui.framelist.FrameListFragment
+import com.blizniuk.livepictures.ui.home.viewmodel.CoordinatorViewModel
 import com.blizniuk.livepictures.util.RoundCornersOutlineProvider
 import com.blizniuk.livepictures.util.repeatOnStart
-import com.blizniuk.livepictures.viewmodel.CoordinatorViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 insets
             }
 
-            val cornerRadius = resources.getDimension(R.dimen.round_corners_radius)
+            val cornerRadius = resources.getDimension(R.dimen.canvas_round_corners_radius)
             canvasBackground.clipToOutline = true
             canvasBackground.outlineProvider = RoundCornersOutlineProvider(cornerRadius)
 
@@ -124,6 +125,15 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             deleteFrame.setOnClickListener { viewModel.deleteCurrentFrame() }
             newFrame.setOnClickListener { viewModel.newFrame() }
+
+            frameList.setOnClickListener {
+                viewModel.saveChanges()
+                FrameListFragment.newInstance(
+                    canvasWidth = canvasView.width,
+                    canvasHeight = canvasView.height
+                )
+                    .show(supportFragmentManager, "frame_list_dialog")
+            }
         }
     }
 }
