@@ -39,7 +39,7 @@ class FrameListFragment : BottomSheetDialogFragment() {
         (dialog as? BottomSheetDialog)?.apply {
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED
             behavior.isDraggable = true
-            behavior.isFitToContents = false
+            behavior.isFitToContents = true
             behavior.peekHeight = resources.getDimensionPixelSize(R.dimen.frame_list_peek_height)
         }
 
