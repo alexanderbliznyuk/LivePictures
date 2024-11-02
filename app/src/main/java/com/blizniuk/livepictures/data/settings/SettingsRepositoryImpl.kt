@@ -55,7 +55,7 @@ class SettingsRepositoryImpl(
 
     private companion object {
         val DefaultSettings = AppSettingsDb(
-            defaultFrameDurationMs = 100,
+            defaultFrameDurationMs = 1000,
             pathThicknessLevel = 2F,
             eraseToolThicknessLevel = 10F,
             selectedColor = Color.BLUE,

@@ -129,8 +129,7 @@ class FramesRepositoryImpl(
                         cursor.moveToFirst()
                     }
                     val delayMs = (frame.durationMs / playbackSpeed).roundToLong()
-//                    delay(delayMs)
-                    delay(1000)
+                    delay(delayMs)
                 }
             } finally {
                 cursor.close()
