@@ -20,7 +20,7 @@
     <string name="tooltip_prev_frame">Previous Frame</string>
     <string name="tooltip_more_menu">More menu</string>
 
-    <string name="more_settings">Settings</string>
+    <string name="more_animation_speed">Animation Speed</string>
     <string name="more_copy_frame">Copy Frame</string>
     <string name="more_export">Export as GIF</string>
     <string name="more_generate">Generate Frames</string>

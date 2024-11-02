@@ -14,11 +14,11 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/settings"
+            android:id="@+id/animationSpeed"
             style="@style/MoreMenuItem"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="@string/more_settings" />
+            android:text="@string/more_animation_speed" />
 
         <TextView
             android:id="@+id/copyFrame"

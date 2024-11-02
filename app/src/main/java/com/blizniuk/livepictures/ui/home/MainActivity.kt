@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity() {
         popUp.elevation = 0F
 
         binding.apply {
-            settings.setOnClickListener {
+            animationSpeed.setOnClickListener {
                 popUp.dismiss()
             }
 
