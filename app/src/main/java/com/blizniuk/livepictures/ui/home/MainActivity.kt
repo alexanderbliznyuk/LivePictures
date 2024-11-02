@@ -17,6 +17,7 @@ import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
 import com.blizniuk.livepictures.databinding.PopupShapePickerBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
+import com.blizniuk.livepictures.ui.cmdlist.CmdListFragment
 import com.blizniuk.livepictures.ui.colorpicker.ColorPickerFragment
 import com.blizniuk.livepictures.ui.framelist.FrameListFragment
 import com.blizniuk.livepictures.ui.home.state.CanvasMode
@@ -86,6 +87,10 @@ class MainActivity : AppCompatActivity() {
 
             colorPicker.setOnClickListener {
                 ColorPickerFragment().show(supportFragmentManager, "ColorPicker")
+            }
+
+            openCmdList.setOnClickListener {
+                CmdListFragment.newInstance().show(supportFragmentManager, "CmdList")
             }
 
             repeatOnStart {

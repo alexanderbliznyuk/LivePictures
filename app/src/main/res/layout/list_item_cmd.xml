@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="128dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/frame_list_item_spacing"
+    android:foreground="?selectableItemBackground"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            >
+
+            <ImageView
+                android:id="@+id/canvasBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/frame_preview_canvas" />
+
+            <com.blizniuk.livepictures.view.CmdPreviewView
+                android:id="@+id/preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:id="@+id/selectionBorder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/selected_item_border" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:minHeight="32dp"
+            android:paddingHorizontal="8dp" />
+    </LinearLayout>
+
+</FrameLayout>

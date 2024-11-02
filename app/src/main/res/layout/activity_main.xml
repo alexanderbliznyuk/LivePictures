@@ -211,6 +211,17 @@
             app:layout_constraintTop_toTopOf="@id/bottomContainerTop">
 
             <ImageView
+                android:id="@+id/openCmdList"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_tool_cmd_list"
+                android:tooltipText="@string/tooltip_tool_pencil"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
                 android:id="@+id/pencil"
                 style="@style/ToolButton.Tintable"
                 android:layout_width="wrap_content"
@@ -274,10 +285,7 @@
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <FrameLayout
         android:id="@+id/loaderContent"

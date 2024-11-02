@@ -8,7 +8,6 @@ import com.blizniuk.livepictures.domain.graphics.entity.Frame
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class FragmentListViewModel @Inject constructor(
     val data = framesRepository.frames(0)
         .cachedIn(viewModelScope)
 
-    val selectedItemId = settingsRepository
+    val selectedFrameIndexId = settingsRepository
         .currentAppSettings()
         .mapNotNull {
             framesRepository.getFrameIndexById(it.currentFrameId)

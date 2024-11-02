@@ -16,6 +16,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 
@@ -62,7 +64,15 @@ class FrameListFragment : BottomSheetDialogFragment() {
                     }
 
                     launch {
-                        viewmodel.selectedItemId.collect {
+                        val index = viewmodel.selectedFrameIndexId.firstOrNull()
+                        delay(300)
+                        if (index != null) {
+                            framesRecycler.scrollToPosition(index.toInt() - 1)
+                        }
+                    }
+
+                    launch {
+                        viewmodel.selectedFrameIndexId.collect {
                             //frames indices start from 1
                             adapter.selectedIndex = it - 1
                         }

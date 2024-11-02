@@ -15,6 +15,7 @@
     <string name="tooltip_tool_erase">Erase tool</string>
     <string name="tooltip_tool_shape_picker">Shape picker</string>
     <string name="tooltip_tool_color_picker">Color Picker</string>
+    <string name="tooltip_tool_cmd_list">Frame\'s drawn commands</string>
     <string name="tooltip_next_frame">Next Frame</string>
     <string name="tooltip_prev_frame">Previous Frame</string>
 
@@ -23,4 +24,7 @@
     <string name="tooltip_shape_triangle">Triangle</string>
 
     <string name="color_picker_selected_color">Selected Color:</string>
+
+    <string name="cmd_list_title">Commands List</string>
+    <string name="cmd_list_empty">Nothing has been drawn yet</string>
 </resources>

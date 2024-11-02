@@ -18,7 +18,13 @@ data class Point(
     @SerialName("y")
     @Serializable(with = FastFloatSerializer::class)
     val y: Float,
-)
+) {
+    companion object {
+        val Zero = Point(0F, 0F)
+    }
+}
+
+
 
 
 class FastFloatSerializer : KSerializer<Float> {

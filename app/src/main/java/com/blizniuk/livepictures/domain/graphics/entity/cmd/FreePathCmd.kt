@@ -5,33 +5,37 @@ import android.graphics.Color
 import android.graphics.CornerPathEffect
 import android.graphics.Paint
 import android.graphics.Path
-import android.icu.text.DecimalFormat
+import android.graphics.RectF
 import com.blizniuk.livepictures.domain.graphics.entity.Point
 import com.blizniuk.livepictures.domain.graphics.entity.RenderContext
 import com.blizniuk.livepictures.domain.graphics.entity.Renderable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.math.roundToInt
+import kotlin.math.max
+import kotlin.math.min
 
 class FreePathCmd(
     var color: Int,
     var thicknessLevel: Float,
     points: List<Point> = emptyList(),
+    offset: Point = Point.Zero,
 ) : DrawCmd(), Renderable, FreeDrawableCmd {
+
+    override val isMovable: Boolean = true
 
     private val points: MutableList<Point> = mutableListOf()
     private val path = Path()
 
+    private var minX: Float = Float.MAX_VALUE
+    private var minY: Float = Float.MAX_VALUE
+    private var maxX: Float = Float.MIN_VALUE
+    private var maxY: Float = Float.MIN_VALUE
+
+    private var offsetX: Float = offset.x
+    private var offsetY: Float = offset.y
+
     init {
-        if (points.isNotEmpty()) {
-            this.points.addAll(points)
-            val startPoint = points.first()
-            path.moveTo(startPoint.x, startPoint.y)
-            for (i in 1..<points.size) {
-                val point = points[i]
-                path.lineTo(point.x, point.y)
-            }
-        }
+        points.forEach { newPoint(it.x, it.y) }
     }
 
     override fun newPoint(x: Float, y: Float) {
@@ -41,7 +45,27 @@ class FreePathCmd(
             path.lineTo(x, y)
         }
 
+        minX = min(minX, x)
+        minY = min(minY, y)
+
+        maxX = max(maxX, x)
+        maxY = max(maxY, y)
+
         points.add(Point(x, y))
+    }
+
+    override fun bounds(rect: RectF) {
+        if (points.isNotEmpty()) {
+            rect.set(minX, minY, maxX, maxY)
+            rect.offset(offsetX, offsetY)
+        } else {
+            rect.set(0F, 0F, 0F, 0F)
+        }
+    }
+
+    override fun moveBy(dx: Float, dy: Float) {
+        offsetX += dx
+        offsetY += dy
     }
 
     override fun getDrawData(): DrawCmdData {
@@ -49,6 +73,7 @@ class FreePathCmd(
             points = points,
             color = color,
             thicknessLevel = thicknessLevel,
+            offset = Point(offsetX, offsetY)
         )
     }
 
@@ -57,7 +82,11 @@ class FreePathCmd(
         paint.color = color
         paint.strokeWidth = renderContext.convertToPx(thicknessLevel)
 
+        canvas.save()
+        canvas.translate(-offsetX, -offsetY)
         canvas.drawPath(path, paint)
+
+        canvas.restore()
     }
 
     private fun newPaint(): Paint {
@@ -84,12 +113,14 @@ data class FreePathCmdData(
     @SerialName("points") val points: List<Point>,
     @SerialName("color") val color: Int,
     @SerialName("thickness_level") val thicknessLevel: Float,
+    @SerialName("offset") val offset: Point
 ) : DrawCmdData() {
     override fun toDrawCmd(): DrawCmd {
         return FreePathCmd(
             color = color,
             thicknessLevel = thicknessLevel,
-            points = points
+            points = points,
+            offset = offset,
         )
     }
 }

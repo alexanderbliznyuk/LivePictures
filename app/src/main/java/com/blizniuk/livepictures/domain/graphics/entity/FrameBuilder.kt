@@ -1,6 +1,9 @@
 package com.blizniuk.livepictures.domain.graphics.entity
 
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.view.MotionEvent
 import com.blizniuk.livepictures.domain.graphics.ToolData
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmd
@@ -13,6 +16,9 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     private var currentCmd: DrawCmd? = null
     private var toolData: ToolData? = null
 
+    val drawCommands: List<DrawCmd>
+        get() = cmds
+
     val id: Long
         get() = frame.id
 
@@ -20,7 +26,6 @@ class FrameBuilder(private val frame: Frame) : Renderable {
         get() = frame.index
 
     fun isChanged(): Boolean {
-        //TODO: override equals for cmds
         val isChanged = frame.drawCmds != cmds
         return isChanged
     }
@@ -91,9 +96,32 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     }
 
 
+    private val rect = RectF()
+
+
     override fun render(canvas: Canvas, renderContext: RenderContext) {
         cmds.forEach { it.render(canvas, renderContext) }
         currentCmd?.render(canvas, renderContext)
+    }
+
+    private fun drawBorder(canvas: Canvas, renderContext: RenderContext, cmd: DrawCmd) {
+        cmd.bounds(rect)
+        if (!rect.isEmpty) {
+            val paint = renderContext.get(BorderPaintKey) {
+                val borderSize = renderContext.convertToPx(2F)
+                createBorderPaint(borderSize)
+            }
+            canvas.drawRect(rect, paint)
+        }
+    }
+
+    private fun createBorderPaint(borderWidth: Float): Paint {
+        return Paint().apply {
+            isAntiAlias = true
+            color = Color.GREEN
+            style = Paint.Style.STROKE
+            strokeWidth = borderWidth
+        }
     }
 
     fun canUndo(): Boolean {
@@ -111,5 +139,9 @@ class FrameBuilder(private val frame: Frame) : Renderable {
 
     fun build(): Frame {
         return frame.copy(drawCmds = cmds)
+    }
+
+    private companion object {
+        private val BorderPaintKey = RenderContext.newKey()
     }
 }

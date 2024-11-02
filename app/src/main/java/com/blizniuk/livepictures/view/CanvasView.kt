@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -13,6 +14,8 @@ import com.blizniuk.livepictures.domain.graphics.entity.FrameBuilder
 import com.blizniuk.livepictures.domain.graphics.entity.RenderContext
 import com.blizniuk.livepictures.domain.graphics.entity.Renderable
 import com.blizniuk.livepictures.ui.home.state.CanvasMode
+import com.blizniuk.livepictures.util.gesture.MoveGestureDetector
+import com.blizniuk.livepictures.util.gesture.RotateGestureDetector
 
 class CanvasView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -55,7 +58,12 @@ class CanvasView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (mode == CanvasMode.Draw && animationFrame == null) {
             frameBuilder?.onTouchEvent(event)
+
+            rotateGestureDetector.onTouchEvent(event)
+            scaleGestureDetector.onTouchEvent(event)
+            moveGestureDetector.onTouchEvent(event)
         }
+
         return true
     }
 
@@ -83,5 +91,36 @@ class CanvasView @JvmOverloads constructor(
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         frameBuilder?.onDataChangedListener = null
+    }
+
+
+    private val scaleGestureDetector: ScaleGestureDetector =
+        ScaleGestureDetector(context, OverlayScaleGestureListener())
+    private val moveGestureDetector = MoveGestureDetector(context, OverlayMoveGestureListener())
+    private val rotateGestureDetector =
+        RotateGestureDetector(context, OverlayRotateGestureListener())
+
+    private inner class OverlayScaleGestureListener :
+        ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            println("AABBCC scale ${detector.scaleFactor}")
+            return true
+        }
+    }
+
+    private inner class OverlayRotateGestureListener :
+        RotateGestureDetector.SimpleOnRotateGestureListener() {
+        override fun onRotate(detector: RotateGestureDetector): Boolean {
+            println("AABBCC rotate ${detector.rotationDegreesDelta}")
+            return true
+        }
+    }
+
+    private inner class OverlayMoveGestureListener :
+        MoveGestureDetector.SimpleOnMoveGestureListener() {
+        override fun onMove(detector: MoveGestureDetector): Boolean {
+            println("AABBCC move ${detector.focusDelta}")
+            return true
+        }
     }
 }
