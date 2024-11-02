@@ -13,4 +13,5 @@ interface SettingsRepository {
     suspend fun setEraseToolThicknessLevel(value: Float)
     suspend fun setSelectedColor(value: Int)
     suspend fun setCurrentFrameId(value: Long)
+    suspend fun playbackSpeedFactor(value: Float)
 }

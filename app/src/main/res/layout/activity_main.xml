@@ -12,62 +12,74 @@
         android:layout_height="match_parent"
         tools:context=".ui.home.MainActivity">
 
-        <ImageView
-            android:id="@+id/undo"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_undo"
-            android:tooltipText="@string/tooltip_undo"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topToolPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-            app:layout_constraintStart_toStartOf="@id/startEdge"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/redo"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_redo"
-            android:tooltipText="@string/tooltip_redo"
-            app:layout_constraintStart_toEndOf="@id/undo"
-            app:layout_constraintTop_toTopOf="@id/undo" />
-
-        <ImageView
-            android:id="@+id/deleteFrame"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_delete_frame"
-            android:tooltipText="@string/tooltip_delete_frame"
-            app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-            app:layout_constraintEnd_toStartOf="@id/newFrame"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/newFrame"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:src="@drawable/ic_new_frame"
-            android:tooltipText="@string/tooltip_new_frame"
-            app:layout_constraintEnd_toStartOf="@id/frameList"
-            app:layout_constraintStart_toEndOf="@id/deleteFrame"
-            app:layout_constraintTop_toTopOf="@id/deleteFrame" />
-
-        <ImageView
-            android:id="@+id/frameList"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_frame_list"
-            android:tooltipText="@string/tooltip_show_frames"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/newFrame"
-            app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/undo"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_undo"
+                android:tooltipText="@string/tooltip_undo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/redo"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_redo"
+                android:tooltipText="@string/tooltip_redo"
+                app:layout_constraintStart_toEndOf="@id/undo"
+                app:layout_constraintTop_toTopOf="@id/undo" />
+
+            <ImageView
+                android:id="@+id/deleteFrame"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_delete_frame"
+                android:tooltipText="@string/tooltip_delete_frame"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/newFrame"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/newFrame"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_new_frame"
+                android:tooltipText="@string/tooltip_new_frame"
+                app:layout_constraintEnd_toStartOf="@id/frameList"
+                app:layout_constraintStart_toEndOf="@id/deleteFrame"
+                app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+
+            <ImageView
+                android:id="@+id/frameList"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_frame_list"
+                android:tooltipText="@string/tooltip_show_frames"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/newFrame"
+                app:layout_constraintTop_toTopOf="@id/deleteFrame" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <ImageView
@@ -75,10 +87,11 @@
             style="@style/ToolButton.Tintable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:src="@drawable/ic_play"
             android:tooltipText="@string/tooltip_start_animation"
             app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
-            app:layout_constraintEnd_toEndOf="@id/endEdge"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -129,17 +142,16 @@
             app:layout_constraintStart_toStartOf="@id/canvasBackground"
             app:layout_constraintTop_toTopOf="@id/canvasBackground" />
 
-
         <ImageView
             android:id="@+id/prevFrame"
             style="@style/ToolButton.Tintable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:src="@drawable/ic_prev_frame"
             android:tooltipText="@string/tooltip_prev_frame"
-            android:layout_marginBottom="12dp"
             app:layout_constraintEnd_toStartOf="@id/currentFrameIndex"
-            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop" />
+            app:layout_constraintTop_toTopOf="@id/counterAnchor" />
 
         <TextView
             android:id="@+id/currentFrameIndex"
@@ -149,15 +161,25 @@
             app:layout_constraintTop_toTopOf="@id/frameCounterDivider"
             tools:text="2" />
 
+        <Space
+            android:id="@+id/counterAnchor"
+            style="@style/ToolButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/frameCounterDivider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" / "
-            app:layout_constraintBottom_toBottomOf="@id/prevFrame"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/prevFrame"
+            app:layout_constraintBottom_toBottomOf="@id/counterAnchor"
+            app:layout_constraintEnd_toEndOf="@id/counterAnchor"
+            app:layout_constraintStart_toStartOf="@id/counterAnchor"
+            app:layout_constraintTop_toTopOf="@id/counterAnchor"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -178,68 +200,80 @@
             app:layout_constraintStart_toEndOf="@id/totalFrames"
             app:layout_constraintTop_toTopOf="@id/prevFrame" />
 
-        <ImageView
-            android:id="@+id/pencil"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_pencil"
-            android:tooltipText="@string/tooltip_tool_pencil"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomToolPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/erase"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bottomContainerTop" />
-
-        <ImageView
-            android:id="@+id/erase"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_erase"
-            android:tooltipText="@string/tooltip_tool_erase"
-            app:layout_constraintEnd_toStartOf="@id/toolbox"
-            app:layout_constraintStart_toEndOf="@id/pencil"
-            app:layout_constraintTop_toTopOf="@id/pencil" />
-
-        <ImageView
-            android:id="@+id/toolbox"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_toolbox"
-            android:tooltipText="@string/tooltip_tool_toolbox"
-            app:layout_constraintEnd_toStartOf="@id/colorPicker"
-            app:layout_constraintStart_toEndOf="@id/erase"
-            app:layout_constraintTop_toTopOf="@id/pencil" />
-
-        <FrameLayout
-            android:id="@+id/colorPicker"
-            style="@style/ToolButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:tooltipText="@string/tooltip_tool_color_picker"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbox"
-            app:layout_constraintTop_toTopOf="@id/pencil">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bottomContainerTop">
 
             <ImageView
-                android:id="@+id/chosenColor"
+                android:id="@+id/pencil"
+                style="@style/ToolButton.Tintable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/color_picker_tool_color" />
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_pencil"
+                android:tooltipText="@string/tooltip_tool_pencil"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/erase"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                android:id="@+id/erase"
+                style="@style/ToolButton.Tintable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/color_picker_tool_border" />
-        </FrameLayout>
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_erase"
+                android:tooltipText="@string/tooltip_tool_erase"
+                app:layout_constraintEnd_toStartOf="@id/shapePicker"
+                app:layout_constraintStart_toEndOf="@id/pencil"
+                app:layout_constraintTop_toTopOf="@id/pencil" />
+
+            <ImageView
+                android:id="@+id/shapePicker"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_shapes"
+                android:tooltipText="@string/tooltip_tool_toolbox"
+                app:layout_constraintEnd_toStartOf="@id/colorPicker"
+                app:layout_constraintStart_toEndOf="@id/erase"
+                app:layout_constraintTop_toTopOf="@id/pencil" />
+
+            <FrameLayout
+                android:id="@+id/colorPicker"
+                style="@style/ToolButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:tooltipText="@string/tooltip_tool_color_picker"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/shapePicker"
+                app:layout_constraintTop_toTopOf="@id/pencil">
+
+                <ImageView
+                    android:id="@+id/chosenColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/color_picker_tool_color" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/color_picker_tool_border" />
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,9 +13,14 @@ class FramePreviewView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    init {
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+    }
+
     var canvasWidth: Int = 0
     var canvasHeight: Int = 0
     var renderContext: RenderContext? = null
+
 
     var frame: Renderable? = null
     override fun onDraw(canvas: Canvas) {

@@ -8,14 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.ui.framelist.FrameListFragment
+import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.viewmodel.CoordinatorViewModel
 import com.blizniuk.livepictures.util.RoundCornersOutlineProvider
 import com.blizniuk.livepictures.util.repeatOnStart
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -52,16 +55,17 @@ class MainActivity : AppCompatActivity() {
             initCanvasView()
             initFrameCounter()
             initTopCommands()
+            initPlayPause()
         }
     }
 
 
     private fun initTools() {
         binding.apply {
-            val toolsButtons = listOf(pencil, erase, toolbox, colorPicker)
+            val toolsButtons = listOf(pencil, erase, shapePicker, colorPicker)
             pencil.tag = ToolId.Pencil
             erase.tag = ToolId.Erase
-            toolbox.tag = ToolId.Toolbox
+            shapePicker.tag = ToolId.ShapePicker
             colorPicker.tag = ToolId.ColorPicker
 
             val clickListener: (View) -> Unit = { view -> viewModel.selectTool(view.tag as ToolId) }
@@ -88,9 +92,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var canvasJob: Job? = null
     private fun initCanvasView() {
-        binding.apply {
-            repeatOnStart {
+        canvasJob?.cancel()
+        canvasJob = repeatOnStart {
+            binding.apply {
                 launch {
                     viewModel.currentFrame.collect { frame ->
                         canvasView.frameBuilder = frame
@@ -104,6 +110,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun stopUpdatingCanvas() {
+        canvasJob?.cancel()
+        canvasJob = null
     }
 
     private fun initFrameCounter() {
@@ -134,6 +145,79 @@ class MainActivity : AppCompatActivity() {
                 )
                     .show(supportFragmentManager, "frame_list_dialog")
             }
+        }
+    }
+
+    private fun initPlayPause() {
+        binding.apply {
+            play.setOnClickListener { viewModel.toggleCanvasMode(canvasView.animationFrame) }
+
+            repeatOnStart {
+                launch {
+                    viewModel.canvasMode.collect { mode ->
+                        updateUi(mode)
+                        when (mode) {
+                            CanvasMode.Draw -> {
+                                stopAnimation()
+                                initCanvasView()
+                            }
+
+                            CanvasMode.Animation -> {
+                                startAnimation()
+                                stopUpdatingCanvas()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var animationJob: Job? = null
+    private fun startAnimation() {
+        animationJob?.cancel()
+        animationJob = lifecycleScope.launch {
+            viewModel.startAnimation().collect { frame ->
+                binding.apply {
+                    canvasView.animationFrame = frame
+                    currentFrameIndex.text = frame.index.toString()
+                }
+            }
+        }
+    }
+
+    private fun stopAnimation() {
+        if (animationJob != null) {
+            animationJob?.cancel()
+            animationJob = null
+
+            binding.apply {
+                (canvasView.animationFrame)?.let { viewModel.selectActiveFrame(it) }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopAnimation()
+//        viewModel.setDrawMode()
+    }
+
+    private fun updateUi(mode: CanvasMode) {
+        binding.apply {
+            val icon = when (mode) {
+                CanvasMode.Draw -> R.drawable.ic_play
+                CanvasMode.Animation -> R.drawable.ic_pause
+            }
+            play.setImageResource(icon)
+
+            canvasView.mode = mode
+
+            val isAnimation = mode == CanvasMode.Animation
+            topToolPanel.isVisible = !isAnimation
+            bottomToolPanel.isVisible = !isAnimation
+            prevFrame.isVisible = !isAnimation
+            nextFrame.isVisible = !isAnimation
         }
     }
 }

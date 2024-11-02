@@ -37,6 +37,10 @@ class SettingsRepositoryImpl(
         update(getSettingsInternal().copy(currentFrameId = value))
     }
 
+    override suspend fun playbackSpeedFactor(value: Float) {
+        update(getSettingsInternal().copy(playbackSpeedFactor = value))
+    }
+
     override suspend fun getSetting(): AppSettings {
         return getSettingsInternal()
     }
@@ -55,7 +59,8 @@ class SettingsRepositoryImpl(
             pathThicknessLevel = 2F,
             eraseToolThicknessLevel = 10F,
             selectedColor = Color.BLUE,
-            currentFrameId = -1
+            currentFrameId = -1,
+            playbackSpeedFactor = 1F
         )
     }
 }

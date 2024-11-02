@@ -10,6 +10,7 @@ import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
 import com.blizniuk.livepictures.domain.graphics.entity.FrameBuilder
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
+import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.state.FrameCounterState
 import com.blizniuk.livepictures.ui.home.state.LoaderUI
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,9 +19,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,14 +37,18 @@ class CoordinatorViewModel @Inject constructor(
     val selectedTool = MutableStateFlow(ToolId.Pencil)
     val loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
 
-    val currentFrame: StateFlow<FrameBuilder?> = settingsRepository.currentAppSettings().map {
-        framesRepository.getFrameById(it.currentFrameId)?.toBuilder()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val canvasMode: MutableStateFlow<CanvasMode> = MutableStateFlow(CanvasMode.Draw)
+
+    val currentFrame: StateFlow<FrameBuilder?> = settingsRepository.currentAppSettings()
+        .map { it.currentFrameId }
+        .distinctUntilChanged()
+        .map { framesRepository.getFrameById(it)?.toBuilder() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val previousFrame: Flow<Frame?> = currentFrame.map { builder ->
         if (builder == null) return@map null
         framesRepository.getPreviousFrame(builder.build())
-    }
+    }.shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
     val counterState: Flow<FrameCounterState> =
         combine(framesRepository.framesCount(), currentFrame) { total, frame ->
@@ -69,7 +76,7 @@ class CoordinatorViewModel @Inject constructor(
                 ToolData.Erase(thicknessLevel = thickness)
             }
 
-            ToolId.Toolbox -> null
+            ToolId.ShapePicker -> null
             ToolId.ColorPicker -> null
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -145,6 +152,37 @@ class CoordinatorViewModel @Inject constructor(
     fun saveChanges() {
         viewModelScope.launch {
             saveCurrentFrame()
+        }
+    }
+
+    fun setDrawMode() {
+        canvasMode.value = CanvasMode.Draw
+    }
+
+    fun toggleCanvasMode(lastFrame: Frame?) {
+        viewModelScope.launch {
+            saveCurrentFrame()
+            val newMode = when (canvasMode.value) {
+                CanvasMode.Draw -> CanvasMode.Animation
+                CanvasMode.Animation -> CanvasMode.Draw
+            }
+
+            if (newMode == CanvasMode.Draw && lastFrame != null) {
+                settingsRepository.setCurrentFrameId(lastFrame.id)
+            }
+
+            canvasMode.value = newMode
+        }
+    }
+
+    fun startAnimation(): Flow<Frame> {
+        return framesRepository
+            .animateFrames()
+    }
+
+    fun selectActiveFrame(frame: Frame) {
+        viewModelScope.launch {
+            settingsRepository.setCurrentFrameId(frame.id)
         }
     }
 

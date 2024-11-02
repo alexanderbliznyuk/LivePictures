@@ -7,4 +7,5 @@ interface AppSettings {
     val eraseToolThicknessLevel: Float
     val selectedColor: Int
     val currentFrameId: Long
+    val playbackSpeedFactor: Float
 }

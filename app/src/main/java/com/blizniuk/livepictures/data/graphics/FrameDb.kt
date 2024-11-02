@@ -10,10 +10,19 @@ import kotlinx.serialization.Serializable
 
 @Entity(tableName = "frames")
 data class FrameDb(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo("id") val id: Long = 0,
-    @ColumnInfo("frame_index") val index: Long,
-    @ColumnInfo("serialized_frame") val data: String
-)
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(ColumnIdKey) val id: Long = 0,
+    @ColumnInfo(FrameIndexdKey) val index: Long,
+    @ColumnInfo(SerializedDataKey) val data: String
+) {
+
+    companion object {
+        const val ColumnIdKey = "id"
+        const val FrameIndexdKey = "frame_index"
+        const val SerializedDataKey = "serialized_frame_data"
+    }
+
+}
+
 
 
 @Serializable

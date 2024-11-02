@@ -9,10 +9,15 @@ import com.blizniuk.livepictures.domain.graphics.FramesRepository
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
 import com.blizniuk.livepictures.domain.settings.AppSettings
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.math.roundToLong
 
 class FramesRepositoryImpl(
     private val frameDao: FrameDao,
@@ -84,7 +89,7 @@ class FramesRepositoryImpl(
     }
 
     override suspend fun getPreviousFrame(frame: Frame): Frame? {
-         return frameDao.getPrevFrame(frame.index)?.toFrame()
+        return frameDao.getPrevFrame(frame.index)?.toFrame()
     }
 
     override suspend fun getNextFrame(frame: Frame): Frame? {
@@ -99,18 +104,58 @@ class FramesRepositoryImpl(
             .map { it.map { frame -> mapFromDb(frame) } }
     }
 
+    override fun animateFrames(): Flow<Frame> {
+        return flow {
+            val setting = getAppSettings()
+            val startIndex = frameDao.getFrameIndexById(setting.currentFrameId) ?: 1
+            val playbackSpeed = setting.playbackSpeedFactor
+
+            val cursor = frameDao.getFramesCursor()
+            try {
+                val idIndex = cursor.getColumnIndex(FrameDb.ColumnIdKey)
+                val indexIndex = cursor.getColumnIndex(FrameDb.FrameIndexdKey)
+                val dataIndex = cursor.getColumnIndex(FrameDb.SerializedDataKey)
+                cursor.moveToPosition((startIndex - 1).toInt())
+
+                while (true) {
+                    val id = cursor.getLong(idIndex)
+                    val index = cursor.getLong(indexIndex)
+                    val data = cursor.getString(dataIndex)
+                    val frame = mapRawData(id, index, data)
+
+                    emit(frame)
+
+                    if (!cursor.moveToNext()) {
+                        cursor.moveToFirst()
+                    }
+                    val delayMs = (frame.durationMs / playbackSpeed).roundToLong()
+//                    delay(delayMs)
+                    delay(1000)
+                }
+            } finally {
+                cursor.close()
+            }
+        }
+            .flowOn(Dispatchers.Default)
+    }
+
 
     private fun FrameDb.toFrame(): Frame {
         return mapFromDb(this)
     }
+
     private fun mapFromDb(frameDb: FrameDb): Frame {
-        val frameData = json.decodeFromString<FrameData>(frameDb.data)
+        return mapRawData(frameDb.id, frameDb.index, frameDb.data)
+    }
+
+    private fun mapRawData(id: Long, index: Long, data: String): Frame {
+        val frameData = json.decodeFromString<FrameData>(data)
 
         return Frame(
-            id = frameDb.id,
+            id = id,
             drawCmds = frameData.drawCmdData.map { it.toDrawCmd() },
             durationMs = frameData.durationMs,
-            index = frameDb.index
+            index = index
         )
     }
 

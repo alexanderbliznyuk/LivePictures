@@ -1,5 +1,6 @@
 package com.blizniuk.livepictures.data.db
 
+import android.database.Cursor
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
@@ -68,4 +69,7 @@ abstract class FrameDao {
 
     @Query("SELECT * FROM frames ORDER BY frame_index")
     abstract fun framePages(): PagingSource<Int, FrameDb>
+
+    @Query("SELECT * FROM frames ORDER BY frame_index")
+    abstract fun getFramesCursor(): Cursor
 }

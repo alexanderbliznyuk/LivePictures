@@ -13,4 +13,5 @@ data class AppSettingsDb(
     @ColumnInfo("erase_tool_thickness_level") override val eraseToolThicknessLevel: Float,
     @ColumnInfo("selected_color") override val selectedColor: Int,
     @ColumnInfo("current_frame_id") override val currentFrameId: Long,
+    @ColumnInfo("playback_speed_factor") override val playbackSpeedFactor: Float,
 ) : AppSettings
