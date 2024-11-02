@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
+import com.blizniuk.livepictures.databinding.PopupMoreOptionsBinding
 import com.blizniuk.livepictures.databinding.PopupShapePickerBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.ui.cmdlist.CmdListFragment
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
             val shapesIds = setOf(ToolId.ShapeCircle, ToolId.ShapeTriangle, ToolId.ShapeSquare)
             shapePicker.setOnClickListener {
-                showPopup(shapePicker)
+                showShapePickerPopup(shapePicker)
             }
 
             colorPicker.setOnClickListener {
@@ -91,6 +92,10 @@ class MainActivity : AppCompatActivity() {
 
             openCmdList.setOnClickListener {
                 CmdListFragment.newInstance().show(supportFragmentManager, "CmdList")
+            }
+
+            moreMenu.setOnClickListener {
+                showMoreMenuPopup(moreMenu)
             }
 
             repeatOnStart {
@@ -253,7 +258,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showPopup(anchor: View) {
+    private fun showShapePickerPopup(anchor: View) {
         val binding = PopupShapePickerBinding.inflate(layoutInflater)
         val popUp = PopupWindow(this)
         popUp.contentView = binding.root
@@ -262,7 +267,6 @@ class MainActivity : AppCompatActivity() {
         popUp.height = resources.getDimensionPixelSize(R.dimen.shape_picker_popup_height)
         popUp.isFocusable = true
         popUp.elevation = 0F
-
 
 
         binding.apply {
@@ -289,5 +293,37 @@ class MainActivity : AppCompatActivity() {
 
         val xOffset = -(popupWidth - anchor.width) / 2
         popUp.showAsDropDown(anchor, xOffset, 0, Gravity.CENTER_HORIZONTAL)
+    }
+
+    private fun showMoreMenuPopup(anchor: View) {
+        val binding = PopupMoreOptionsBinding.inflate(layoutInflater)
+        val popUp = PopupWindow(this)
+        popUp.contentView = binding.root
+        popUp.setBackgroundDrawable(null)
+        popUp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        popUp.height = resources.getDimensionPixelSize(R.dimen.more_menu_popup_height)
+        popUp.isFocusable = true
+        popUp.elevation = 0F
+
+
+        binding.apply {
+            settings.setOnClickListener {
+
+            }
+
+            copyFrame.setOnClickListener {
+
+            }
+
+            exportGif.setOnClickListener {
+
+            }
+
+            generateFrames.setOnClickListener {
+
+            }
+        }
+
+        popUp.showAsDropDown(anchor, 0, 0, Gravity.END or Gravity.TOP)
     }
 }

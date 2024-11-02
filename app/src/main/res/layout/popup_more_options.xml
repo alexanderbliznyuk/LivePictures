@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:background="@drawable/popup_bkg"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/settings"
+            style="@style/MoreMenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/more_settings" />
+
+        <TextView
+            android:id="@+id/copyFrame"
+            style="@style/MoreMenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/more_copy_frame" />
+
+        <TextView
+            android:id="@+id/exportGif"
+            style="@style/MoreMenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/more_export" />
+
+        <TextView
+            android:id="@+id/generateFrames"
+            style="@style/MoreMenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/more_generate" />
+    </LinearLayout>
+</FrameLayout>

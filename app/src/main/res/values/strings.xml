@@ -18,6 +18,12 @@
     <string name="tooltip_tool_cmd_list">Frame\'s drawn commands</string>
     <string name="tooltip_next_frame">Next Frame</string>
     <string name="tooltip_prev_frame">Previous Frame</string>
+    <string name="tooltip_more_menu">More menu</string>
+
+    <string name="more_settings">Settings</string>
+    <string name="more_copy_frame">Copy frame</string>
+    <string name="more_export">Export as GIF</string>
+    <string name="more_generate">Generate Frames</string>
 
     <string name="tooltip_shape_square">Square</string>
     <string name="tooltip_shape_circle">Circle</string>
