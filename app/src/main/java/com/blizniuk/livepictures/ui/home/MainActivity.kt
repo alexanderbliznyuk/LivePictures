@@ -2,7 +2,10 @@ package com.blizniuk.livepictures.ui.home
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
+import com.blizniuk.livepictures.databinding.PopupShapePickerBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.ui.colorpicker.ColorPickerFragment
 import com.blizniuk.livepictures.ui.framelist.FrameListFragment
@@ -64,13 +68,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTools() {
         binding.apply {
-            val toolsButtons = listOf(pencil, erase, shapePicker)
+            val toolsButtons = listOf(pencil, erase)
             pencil.tag = ToolId.Pencil
             erase.tag = ToolId.Erase
-            shapePicker.tag = ToolId.ShapePicker
 
-            val clickListener: (View) -> Unit = { view -> viewModel.selectTool(view.tag as ToolId) }
-            toolsButtons.forEach { it.setOnClickListener(clickListener) }
+
+            toolsButtons.forEach {
+                it.setOnClickListener { view ->
+                    viewModel.selectTool(view.tag as ToolId)
+                }
+            }
+
+            val shapesIds = setOf(ToolId.ShapeCircle, ToolId.ShapeTriangle, ToolId.ShapeSquare)
+            shapePicker.setOnClickListener {
+                showPopup(shapePicker)
+            }
 
             colorPicker.setOnClickListener {
                 ColorPickerFragment().show(supportFragmentManager, "ColorPicker")
@@ -83,6 +95,8 @@ class MainActivity : AppCompatActivity() {
                             toolsButtons.forEach { view ->
                                 view.isActivated = view.tag == tool
                             }
+
+                            shapePicker.isActivated = tool in shapesIds
                         }
                 }
 
@@ -232,5 +246,43 @@ class MainActivity : AppCompatActivity() {
             prevFrame.isVisible = !isAnimation
             nextFrame.isVisible = !isAnimation
         }
+    }
+
+    private fun showPopup(anchor: View) {
+        val binding = PopupShapePickerBinding.inflate(layoutInflater)
+        val popUp = PopupWindow(this)
+        popUp.contentView = binding.root
+        popUp.setBackgroundDrawable(null)
+        popUp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        popUp.height = resources.getDimensionPixelSize(R.dimen.shape_picker_popup_height)
+        popUp.isFocusable = true
+        popUp.elevation = 0F
+
+
+
+        binding.apply {
+            val currentToolId = viewModel.selectedTool.value
+            shapeSquare.tag = ToolId.ShapeSquare
+            shapeTriangle.tag = ToolId.ShapeTriangle
+            shapeCircle.tag = ToolId.ShapeCircle
+
+            val shapeViews = listOf(shapeSquare, shapeTriangle, shapeCircle)
+            shapeViews.forEach { toolView ->
+                toolView.isActivated = toolView.tag == currentToolId
+                toolView.setOnClickListener {
+                    (toolView.tag as? ToolId)?.let { toolId ->
+                        viewModel.selectTool(toolId)
+                    }
+
+                    popUp.dismiss()
+                }
+            }
+        }
+
+
+        val popupWidth = resources.getDimensionPixelSize(R.dimen.shape_picker_popup_width)
+
+        val xOffset = -(popupWidth - anchor.width) / 2
+        popUp.showAsDropDown(anchor, xOffset, 0, Gravity.CENTER_HORIZONTAL)
     }
 }

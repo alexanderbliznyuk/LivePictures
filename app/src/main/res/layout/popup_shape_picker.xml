@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/popup_bkg"
+        android:elevation="2dp">
+
+        <ImageView
+            android:id="@+id/shapeSquare"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_square"
+            android:tooltipText="@string/tooltip_shape_square" />
+
+        <ImageView
+            android:id="@+id/shapeCircle"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_circle"
+            android:tooltipText="@string/tooltip_shape_circle" />
+
+        <ImageView
+            android:id="@+id/shapeTriangle"
+            style="@style/ToolButton.Tintable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:src="@drawable/ic_tool_triangle"
+            android:tooltipText="@string/tooltip_shape_triangle" />
+
+    </LinearLayout>
+</FrameLayout>

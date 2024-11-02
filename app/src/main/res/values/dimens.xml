@@ -14,4 +14,7 @@
     <dimen name="color_bar_thumb_radius">12dp</dimen>
     <dimen name="color_bar_thumb_stroke_size">1dp</dimen>
 
+    <dimen name="shape_picker_popup_width">168dp</dimen>
+    <dimen name="shape_picker_popup_height">56dp</dimen>
+
 </resources>

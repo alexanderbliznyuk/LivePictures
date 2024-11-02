@@ -94,7 +94,9 @@ class CoordinatorViewModel @Inject constructor(
                     ToolData.Erase(thicknessLevel = thickness)
                 }
 
-                ToolId.ShapePicker -> null
+                ToolId.ShapeSquare -> null
+                ToolId.ShapeCircle -> null
+                ToolId.ShapeTriangle -> null
             }
         }
             .filterNotNull()

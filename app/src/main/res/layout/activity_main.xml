@@ -243,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:src="@drawable/ic_tool_shapes"
-                android:tooltipText="@string/tooltip_tool_toolbox"
+                android:tooltipText="@string/tooltip_tool_shape_picker"
                 app:layout_constraintEnd_toStartOf="@id/colorPicker"
                 app:layout_constraintStart_toEndOf="@id/erase"
                 app:layout_constraintTop_toTopOf="@id/pencil" />

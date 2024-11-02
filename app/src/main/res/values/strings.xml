@@ -13,10 +13,14 @@
     <string name="tooltip_stop_animation">Stop animation</string>
     <string name="tooltip_tool_pencil">Pencil</string>
     <string name="tooltip_tool_erase">Erase tool</string>
-    <string name="tooltip_tool_toolbox">Shape picker</string>
+    <string name="tooltip_tool_shape_picker">Shape picker</string>
     <string name="tooltip_tool_color_picker">Color Picker</string>
     <string name="tooltip_next_frame">Next Frame</string>
     <string name="tooltip_prev_frame">Previous Frame</string>
+
+    <string name="tooltip_shape_square">Square</string>
+    <string name="tooltip_shape_circle">Circle</string>
+    <string name="tooltip_shape_triangle">Triangle</string>
 
     <string name="color_picker_selected_color">Selected Color:</string>
 </resources>
