@@ -48,6 +48,12 @@ class CanvasView @JvmOverloads constructor(
         }
 
     var mode: CanvasMode = CanvasMode.Draw
+        set(value) {
+            field = value
+            if (value == CanvasMode.Draw) {
+                animationFrame = null
+            }
+        }
 
     var animationFrame: Frame? = null
         set(value) {

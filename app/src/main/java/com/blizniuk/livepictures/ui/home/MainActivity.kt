@@ -228,16 +228,16 @@ class MainActivity : AppCompatActivity() {
             animationJob?.cancel()
             animationJob = null
 
-            binding.apply {
-                (canvasView.animationFrame)?.let { viewModel.selectActiveFrame(it) }
-            }
+//            binding.apply {
+//                (canvasView.animationFrame)?.let { viewModel.selectActiveFrame(it) }
+//            }
         }
     }
 
     override fun onStop() {
         super.onStop()
         stopAnimation()
-//        viewModel.setDrawMode()
+        viewModel.setDrawMode()
     }
 
     private fun updateUi(mode: CanvasMode) {
@@ -305,26 +305,26 @@ class MainActivity : AppCompatActivity() {
         popUp.isFocusable = true
         popUp.elevation = 0F
 
-
         binding.apply {
             settings.setOnClickListener {
-
+                popUp.dismiss()
             }
 
             copyFrame.setOnClickListener {
-
+                popUp.dismiss()
             }
 
             exportGif.setOnClickListener {
-
+                popUp.dismiss()
             }
 
             generateFrames.setOnClickListener {
-
+                popUp.dismiss()
             }
 
             deleteAll.setOnClickListener {
-
+                viewModel.deleteAllFrames()
+                popUp.dismiss()
             }
         }
 

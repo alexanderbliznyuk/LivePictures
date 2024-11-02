@@ -189,9 +189,9 @@ class CoordinatorViewModel @Inject constructor(
                 CanvasMode.Animation -> CanvasMode.Draw
             }
 
-            if (newMode == CanvasMode.Draw && lastFrame != null) {
-                settingsRepository.setCurrentFrameId(lastFrame.id)
-            }
+//            if (newMode == CanvasMode.Draw && lastFrame != null) {
+//                settingsRepository.setCurrentFrameId(lastFrame.id)
+//            }
 
             canvasMode.value = newMode
         }
@@ -201,13 +201,6 @@ class CoordinatorViewModel @Inject constructor(
         return framesRepository
             .animateFrames()
     }
-
-    fun selectActiveFrame(frame: Frame) {
-        viewModelScope.launch {
-            settingsRepository.setCurrentFrameId(frame.id)
-        }
-    }
-
 
     private suspend fun saveCurrentFrame(): Frame? {
         val currentBuilder = currentFrame.value
