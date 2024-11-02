@@ -23,10 +23,7 @@ data class FrameDb(
 
 }
 
-
-
 @Serializable
 data class FrameData(
-    @SerialName("draw_data") val drawCmdData: List<DrawCmdData>,
-    @SerialName("duration_ms") val durationMs: Long,
+    @SerialName("draw_data") val drawCmdData: List<DrawCmdData>
 )

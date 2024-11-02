@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.math.roundToLong
 
 class FramesRepositoryImpl(
     private val frameDao: FrameDao,
@@ -29,7 +28,6 @@ class FramesRepositoryImpl(
         val newFrame = Frame(
             id = 0,
             drawCmds = emptyList(),
-            durationMs = getAppSettings().defaultFrameDurationMs,
             index = lastIndex + 1
         )
 
@@ -108,7 +106,8 @@ class FramesRepositoryImpl(
         return flow {
             val setting = getAppSettings()
             val startIndex = frameDao.getFrameIndexById(setting.currentFrameId) ?: 1
-            val playbackSpeed = setting.playbackSpeedFactor
+            val frameDuration = setting.defaultFrameDurationMs
+
 
             val cursor = frameDao.getFramesCursor()
             try {
@@ -128,8 +127,8 @@ class FramesRepositoryImpl(
                     if (!cursor.moveToNext()) {
                         cursor.moveToFirst()
                     }
-                    val delayMs = (frame.durationMs / playbackSpeed).roundToLong()
-                    delay(delayMs)
+
+                    delay(frameDuration)
                 }
             } finally {
                 cursor.close()
@@ -153,7 +152,6 @@ class FramesRepositoryImpl(
         return Frame(
             id = id,
             drawCmds = frameData.drawCmdData.map { it.toDrawCmd() },
-            durationMs = frameData.durationMs,
             index = index
         )
     }
@@ -161,7 +159,6 @@ class FramesRepositoryImpl(
     private fun mapFromFrame(frame: Frame): FrameDb {
         val frameData = FrameData(
             drawCmdData = frame.drawCmds.map { it.getDrawData() },
-            durationMs = frame.durationMs
         )
         val encoded = json.encodeToString(frameData)
         return FrameDb(

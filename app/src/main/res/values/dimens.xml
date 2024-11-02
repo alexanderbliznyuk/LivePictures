@@ -19,6 +19,7 @@
 
     <dimen name="cmd_list_item_spacing">4dp</dimen>
 
-    <dimen name="more_menu_popup_height">200dp</dimen>
+    <dimen name="more_menu_popup_height">248dp</dimen>
+    <dimen name="more_menu_offset">16dp</dimen>
 
 </resources>

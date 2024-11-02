@@ -322,6 +322,10 @@ class MainActivity : AppCompatActivity() {
             generateFrames.setOnClickListener {
 
             }
+
+            deleteAll.setOnClickListener {
+
+            }
         }
 
         popUp.showAsDropDown(anchor, 0, 0, Gravity.END or Gravity.TOP)
