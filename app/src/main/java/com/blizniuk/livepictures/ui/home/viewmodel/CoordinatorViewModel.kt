@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -39,11 +38,16 @@ class CoordinatorViewModel @Inject constructor(
 
     val canvasMode: MutableStateFlow<CanvasMode> = MutableStateFlow(CanvasMode.Draw)
 
-    val currentFrame: StateFlow<FrameBuilder?> = settingsRepository.currentAppSettings()
+    private val settingsShared = settingsRepository.currentAppSettings()
+        .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
+
+    val currentFrame: StateFlow<FrameBuilder?> = settingsShared
         .map { it.currentFrameId }
         .distinctUntilChanged()
         .map { framesRepository.getFrameById(it)?.toBuilder() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val selectedColor: Flow<Int> = settingsShared.map { it.selectedColor }
 
     val previousFrame: Flow<Frame?> = currentFrame.map { builder ->
         if (builder == null) return@map null
@@ -63,23 +67,39 @@ class CoordinatorViewModel @Inject constructor(
             )
         }
 
-    private var toolData: StateFlow<ToolData?> = selectedTool.mapNotNull {
-        when (it) {
-            ToolId.Pencil -> {
-                val color = settingsRepository.getSetting().selectedColor
-                val thickness = settingsRepository.getSetting().pathThicknessLevel
-                ToolData.Pencil(thickness, color)
-            }
 
-            ToolId.Erase -> {
-                val thickness = settingsRepository.getSetting().eraseToolThicknessLevel
-                ToolData.Erase(thicknessLevel = thickness)
-            }
+    private val toolData: StateFlow<ToolData?>
 
-            ToolId.ShapePicker -> null
-            ToolId.ColorPicker -> null
+    init {
+        val drawSettings = settingsShared
+            .map {
+                DrawSettings(
+                    penThicknessLevel = it.pathThicknessLevel,
+                    eraseThicknessLevel = it.eraseToolThicknessLevel,
+                    color = it.selectedColor
+                )
+            }
+            .distinctUntilChanged()
+
+        toolData = combine(selectedTool, drawSettings) { tool, settings ->
+            when (tool) {
+                ToolId.Pencil -> {
+                    val color = settings.color
+                    val thickness = settings.penThicknessLevel
+                    ToolData.Pencil(thickness, color)
+                }
+
+                ToolId.Erase -> {
+                    val thickness = settings.eraseThicknessLevel
+                    ToolData.Erase(thicknessLevel = thickness)
+                }
+
+                ToolId.ShapePicker -> null
+            }
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+            .filterNotNull()
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }
 
     init {
         viewModelScope.launch {
@@ -211,6 +231,13 @@ class CoordinatorViewModel @Inject constructor(
         builder.setToolData(toolData.value)
         return builder
     }
+
+
+    private data class DrawSettings(
+        val penThicknessLevel: Float,
+        val eraseThicknessLevel: Float,
+        val color: Int,
+    )
 }
 
 

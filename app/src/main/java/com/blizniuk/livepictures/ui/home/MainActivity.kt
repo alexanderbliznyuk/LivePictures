@@ -1,5 +1,6 @@
 package com.blizniuk.livepictures.ui.home
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
+import com.blizniuk.livepictures.ui.colorpicker.ColorPickerFragment
 import com.blizniuk.livepictures.ui.framelist.FrameListFragment
 import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.viewmodel.CoordinatorViewModel
@@ -62,22 +64,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTools() {
         binding.apply {
-            val toolsButtons = listOf(pencil, erase, shapePicker, colorPicker)
+            val toolsButtons = listOf(pencil, erase, shapePicker)
             pencil.tag = ToolId.Pencil
             erase.tag = ToolId.Erase
             shapePicker.tag = ToolId.ShapePicker
-            colorPicker.tag = ToolId.ColorPicker
 
             val clickListener: (View) -> Unit = { view -> viewModel.selectTool(view.tag as ToolId) }
             toolsButtons.forEach { it.setOnClickListener(clickListener) }
 
+            colorPicker.setOnClickListener {
+                ColorPickerFragment().show(supportFragmentManager, "ColorPicker")
+            }
+
             repeatOnStart {
-                viewModel.selectedTool
-                    .collect { tool ->
-                        toolsButtons.forEach { view ->
-                            view.isActivated = view.tag == tool
+                launch {
+                    viewModel.selectedTool
+                        .collect { tool ->
+                            toolsButtons.forEach { view ->
+                                view.isActivated = view.tag == tool
+                            }
                         }
+                }
+
+                launch {
+                    viewModel.selectedColor.collect { color ->
+                        binding.chosenColor.imageTintList = ColorStateList.valueOf(color)
                     }
+                }
             }
         }
     }
