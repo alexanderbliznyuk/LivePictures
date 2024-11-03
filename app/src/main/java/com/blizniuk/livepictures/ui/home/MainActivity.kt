@@ -21,6 +21,7 @@ import com.blizniuk.livepictures.databinding.PopupShapePickerBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
 import com.blizniuk.livepictures.ui.cmdlist.CmdListFragment
 import com.blizniuk.livepictures.ui.colorpicker.ColorPickerFragment
+import com.blizniuk.livepictures.ui.duration.FrameDurationPickerFragment
 import com.blizniuk.livepictures.ui.framelist.FrameListFragment
 import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.viewmodel.CoordinatorViewModel
@@ -316,6 +317,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.apply {
             animationSpeed.setOnClickListener {
+                FrameDurationPickerFragment.newInstance()
+                    .show(supportFragmentManager, "Duration Picker")
+
                 popUp.dismiss()
             }
 

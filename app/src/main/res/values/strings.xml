@@ -37,4 +37,7 @@
 
     <string name="toast_new_frame_created">New frame is created</string>
     <string name="toast_frame_copied">Current frame is copied</string>
+
+    <string name="frame_duration_title">Frame duration</string>
+    <string name="frame_duration_duration">Duration: %sms</string>
 </resources>
