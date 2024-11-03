@@ -9,7 +9,7 @@ import com.blizniuk.livepictures.domain.graphics.entity.Renderable
 sealed class DrawCmd : Renderable {
     //fun render(canvas: Canvas, renderContext: RenderContext)
     abstract fun getDrawData(): DrawCmdData
-    abstract fun bounds(rect: RectF)
+    abstract fun bounds(rect: RectF, renderContext: RenderContext)
     abstract fun restore(drawCmdData: DrawCmdData)
     abstract fun copy(): DrawCmd
 

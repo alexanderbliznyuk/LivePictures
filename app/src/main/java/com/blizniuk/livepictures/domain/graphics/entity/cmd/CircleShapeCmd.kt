@@ -28,8 +28,9 @@ class CircleShapeCmd(
 
     private var radius: Float = circleRadius
 
-    override fun bounds(rect: RectF) {
-        val scaledRadius = radius * scale
+    override fun bounds(rect: RectF, renderContext: RenderContext) {
+        val halfThickness = renderContext.convertToPx(thicknessLevel + 2) / 2
+        val scaledRadius = radius * scale + halfThickness
         rect.set(cx - scaledRadius, cy - scaledRadius, cx + scaledRadius, cy + scaledRadius)
     }
 

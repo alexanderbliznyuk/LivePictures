@@ -35,8 +35,9 @@ class SquareShapeCmd(
 
     private var halfSize: Float = halfSize
 
-    override fun bounds(rect: RectF) {
-        val scaledSize = halfSize * scale
+    override fun bounds(rect: RectF, renderContext: RenderContext) {
+        val halfThickness = renderContext.convertToPx(thicknessLevel + 2) / 2
+        val scaledSize = halfSize * scale + halfThickness
         rect.set(cx - scaledSize, cy - scaledSize, cx + scaledSize, cy + scaledSize)
         rotateRect(rect, rotationAngleDegrees)
     }

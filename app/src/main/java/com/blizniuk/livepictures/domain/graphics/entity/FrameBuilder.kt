@@ -251,7 +251,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     }
 
     private fun drawBorder(canvas: Canvas, renderContext: RenderContext, cmd: DrawCmd) {
-        cmd.bounds(cmdBounds)
+        cmd.bounds(cmdBounds, renderContext)
         if (!cmdBounds.isEmpty) {
             val fillPaint = renderContext.get(FillPaintKey) {
                 createFillPaint()

@@ -21,8 +21,12 @@ class FramePreviewView @JvmOverloads constructor(
     var canvasHeight: Int = 0
     var renderContext: RenderContext? = null
 
-
     var frame: Renderable? = null
+        set(value) {
+            field = value
+            postInvalidate()
+        }
+
     override fun onDraw(canvas: Canvas) {
         if (canvasWidth == 0 || canvasHeight == 0) return
         val renderContext = renderContext ?: return

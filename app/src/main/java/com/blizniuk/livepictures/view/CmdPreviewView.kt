@@ -21,6 +21,10 @@ class CmdPreviewView @JvmOverloads constructor(
 
     var renderContext: RenderContext? = null
     var cmd: DrawCmd? = null
+        set(value) {
+            field = value
+            postInvalidate()
+        }
 
     private var rect = RectF()
 
@@ -28,7 +32,7 @@ class CmdPreviewView @JvmOverloads constructor(
         val renderContext = renderContext ?: return
         val cmd = cmd ?: return
 
-        cmd.bounds(rect)
+        cmd.bounds(rect, renderContext)
         if (rect.isEmpty) return
 
         val cmdWidth = rect.width()

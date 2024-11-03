@@ -53,9 +53,16 @@ class ErasePathCmd(
         points.add(Point(x, y))
     }
 
-    override fun bounds(rect: RectF) {
+    override fun bounds(rect: RectF, renderContext: RenderContext) {
         if (points.isNotEmpty()) {
-            rect.set(minX, minY, maxX, maxY)
+            val halfThickness = renderContext.convertToPx(thicknessLevel + 2) / 2
+            rect.set(
+                minX - halfThickness,
+                minY - halfThickness,
+                maxX + halfThickness,
+                maxY + halfThickness
+            )
+            rect.offset(offsetX, offsetY)
         } else {
             rect.set(0F, 0F, 0F, 0F)
         }

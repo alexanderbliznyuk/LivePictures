@@ -38,14 +38,16 @@ class TriangleShapeCmd(
     private var radius: Float = radius
     private val path = Path()
 
-    override fun bounds(rect: RectF) {
+    override fun bounds(rect: RectF, renderContext: RenderContext) {
         val scaledRadius = radius * scale
 
-        val leftX = cx - scaledRadius * Cos30
-        val rightX = cx + scaledRadius * Cos30
+        val halfThickness = renderContext.convertToPx(thicknessLevel + 2) / 2
 
-        val topY = cy - scaledRadius
-        val bottomY = cy + scaledRadius * Cos60
+        val leftX = cx - scaledRadius * Cos30 - halfThickness
+        val rightX = cx + scaledRadius * Cos30 + halfThickness
+
+        val topY = cy - scaledRadius - halfThickness
+        val bottomY = cy + scaledRadius * Cos60 + halfThickness
 
         val angle = Math.toRadians(rotationAngleDegrees.toDouble())
         val cos = cos(angle).toFloat()
