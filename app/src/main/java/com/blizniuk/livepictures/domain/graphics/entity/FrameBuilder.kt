@@ -185,7 +185,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                 cmdQueue.delete(cmd, data)
             }
         }
-        
+
         cmdToEdit = null
         cmdBuilder = null
         editCmdOriginalData = null

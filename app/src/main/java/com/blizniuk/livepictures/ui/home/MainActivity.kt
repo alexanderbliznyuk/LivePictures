@@ -201,6 +201,7 @@ class MainActivity : AppCompatActivity() {
                         nextFrame.isEnabled = state.nextEnabled
                         totalFrames.text = state.total
                         currentFrameIndex.text = state.currentIndex
+                        currentFrameIndexHiddenWidth.text = state.total
                     }
                 }
             }

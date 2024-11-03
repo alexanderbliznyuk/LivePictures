@@ -198,7 +198,7 @@
             android:layout_marginBottom="12dp"
             android:src="@drawable/ic_prev_frame"
             android:tooltipText="@string/tooltip_prev_frame"
-            app:layout_constraintEnd_toStartOf="@id/currentFrameIndex"
+            app:layout_constraintEnd_toStartOf="@id/currentFrameIndexHiddenWidth"
             app:layout_constraintTop_toTopOf="@id/counterAnchor" />
 
         <TextView
@@ -207,6 +207,15 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@id/frameCounterDivider"
             app:layout_constraintTop_toTopOf="@id/frameCounterDivider"
+            tools:text="2" />
+
+        <TextView
+            android:id="@+id/currentFrameIndexHiddenWidth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@id/currentFrameIndex"
+            app:layout_constraintTop_toTopOf="@id/currentFrameIndex"
             tools:text="2" />
 
         <Space
