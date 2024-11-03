@@ -34,4 +34,7 @@
 
     <string name="cmd_list_title">Commands List</string>
     <string name="cmd_list_empty">Nothing has been drawn yet</string>
+
+    <string name="toast_new_frame_created">New frame is created</string>
+    <string name="toast_frame_copied">Current frame is copied</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.blizniuk.livepictures.domain.graphics
 
 import androidx.paging.PagingData
-import com.blizniuk.livepictures.domain.graphics.entity.AnimationFrameInfo
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +15,7 @@ interface FramesRepository {
     suspend fun getPreviousFrame(frame: Frame): Frame?
     suspend fun getNextFrame(frame: Frame): Frame?
     suspend fun getLastFrame(): Frame
+    suspend fun copyCurrentFrame(): Frame?
 
     fun animateFrames(): Flow<Frame>
 

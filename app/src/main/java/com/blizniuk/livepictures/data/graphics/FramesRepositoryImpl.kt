@@ -94,6 +94,19 @@ class FramesRepositoryImpl(
         return frameDao.getNextFrame(frame.index)?.toFrame()
     }
 
+    override suspend fun copyCurrentFrame(): Frame? {
+        getAppSettings().currentFrameId
+        val frame = frameDao.getFrameById(getAppSettings().currentFrameId)
+        if (frame != null) {
+            val newFrame = frame.copy(id = 0, index = frame.index + 1)
+            val newId = frameDao.insertNewFrame(newFrame)
+            settingsRepository.setCurrentFrameId(newId)
+            return mapRawData(newId, newFrame.index, newFrame.data)
+        }
+
+        return null
+    }
+
     override fun frames(initialId: Long): Flow<PagingData<Frame>> {
         return Pager(PagingConfig(pageSize = 20)) {
             frameDao.framePages()

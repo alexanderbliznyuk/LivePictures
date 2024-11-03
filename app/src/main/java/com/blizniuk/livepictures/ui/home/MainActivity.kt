@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -122,8 +123,16 @@ class MainActivity : AppCompatActivity() {
     private fun initLoader() {
         binding.apply {
             repeatOnStart {
-                viewModel.loader.collect {
-                    loaderContent.isVisible = it != null
+                launch {
+                    viewModel.loader.collect {
+                        loaderContent.isVisible = it != null
+                    }
+                }
+
+                launch {
+                    viewModel.toasts.collect { textId ->
+                        Toast.makeText(this@MainActivity, textId, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -311,6 +320,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             copyFrame.setOnClickListener {
+                viewModel.copyCurrentFrame()
                 popUp.dismiss()
             }
 

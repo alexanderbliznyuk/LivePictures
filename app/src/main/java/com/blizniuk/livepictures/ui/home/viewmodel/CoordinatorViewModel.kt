@@ -4,6 +4,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.domain.graphics.FramesRepository
 import com.blizniuk.livepictures.domain.graphics.ToolData
 import com.blizniuk.livepictures.domain.graphics.ToolId
@@ -14,11 +15,14 @@ import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.state.FrameCounterState
 import com.blizniuk.livepictures.ui.home.state.LoaderUI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -33,6 +37,11 @@ class CoordinatorViewModel @Inject constructor(
     private val framesRepository: FramesRepository,
 ) : ViewModel(), DefaultLifecycleObserver {
 
+
+    val toasts = MutableSharedFlow<Int>(
+        extraBufferCapacity = 2,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val selectedTool = MutableStateFlow(ToolId.Pencil)
     val loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
 
@@ -129,6 +138,7 @@ class CoordinatorViewModel @Inject constructor(
         viewModelScope.launch {
             saveCurrentFrame()
             framesRepository.newFrame()
+            toasts.tryEmit(R.string.toast_new_frame_created)
         }
     }
 
@@ -170,6 +180,17 @@ class CoordinatorViewModel @Inject constructor(
             }
         }
     }
+
+    fun copyCurrentFrame() {
+        viewModelScope.launch {
+            saveCurrentFrame()
+            val result = framesRepository.copyCurrentFrame()
+            if (result != null) {
+                toasts.tryEmit(R.string.toast_frame_copied)
+            }
+        }
+    }
+
 
     fun saveChanges() {
         viewModelScope.launch {
@@ -234,13 +255,3 @@ class CoordinatorViewModel @Inject constructor(
         val color: Int,
     )
 }
-
-
-
-
-
-
-
-
-
-
