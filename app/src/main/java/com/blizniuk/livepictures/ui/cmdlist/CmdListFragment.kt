@@ -45,9 +45,6 @@ class CmdListFragment : BottomSheetDialogFragment() {
 
         binding?.apply {
             val adapter = CmdListAdapter(context = requireContext())
-            adapter.itemClick = { //TODO:
-            }
-
             cmdRecycler.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             cmdRecycler.adapter = adapter
@@ -63,6 +60,8 @@ class CmdListFragment : BottomSheetDialogFragment() {
                             } else {
                                 adapter.submitList(listOf(AdapterItem.Empty))
                             }
+
+                            adapter.itemClick = { cmd -> frameBuilder.cmdToEdit = cmd }
                         }
                     }
                 }

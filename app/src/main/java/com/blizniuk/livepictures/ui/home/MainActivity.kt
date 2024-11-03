@@ -27,6 +27,8 @@ import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.viewmodel.CoordinatorViewModel
 import com.blizniuk.livepictures.util.RoundCornersOutlineProvider
 import com.blizniuk.livepictures.util.repeatOnStart
+import com.blizniuk.livepictures.view.CanvasView.OnCmdEditModeChangeListener
+import com.blizniuk.livepictures.view.CanvasView.OnUndoRedoChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -139,11 +141,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var canvasJob: Job? = null
+
     private fun initCanvasView() {
-        canvasJob?.cancel()
-        canvasJob = repeatOnStart {
-            binding.apply {
+        binding.apply {
+            canvasView.onCmdEditModeChangeListener = OnCmdEditModeChangeListener { isInEditMode ->
+                topToolPanel.isVisible = !isInEditMode
+                bottomToolPanel.isVisible = !isInEditMode
+                play.isVisible = !isInEditMode
+
+                editCmdPanel.isVisible = isInEditMode
+
+
+                confirmChanges.setOnClickListener { canvasView.confirmChanges() }
+                discardChanges.setOnClickListener { canvasView.discardChanges() }
+            }
+
+            canvasView.onCmdUndoRedoChangeListener = OnUndoRedoChangeListener { canUndo, canRedo ->
+                undo.isEnabled = canUndo
+                redo.isEnabled = canRedo
+            }
+        }
+
+        startUpdatingCanvas()
+    }
+
+    private var canvasUpdatesJob: Job? = null
+    private fun startUpdatingCanvas() {
+        canvasUpdatesJob?.cancel()
+        binding.apply {
+            canvasUpdatesJob = repeatOnStart {
                 launch {
                     viewModel.currentFrame.collect { frame ->
                         canvasView.frameBuilder = frame
@@ -159,9 +185,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun stopUpdatingCanvas() {
-        canvasJob?.cancel()
-        canvasJob = null
+        canvasUpdatesJob?.cancel()
+        canvasUpdatesJob = null
     }
 
     private fun initFrameCounter() {
@@ -181,6 +208,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTopCommands() {
         binding.apply {
+            undo.setOnClickListener { canvasView.undo() }
+            redo.setOnClickListener { canvasView.redo() }
+
             deleteFrame.setOnClickListener { viewModel.deleteCurrentFrame() }
             newFrame.setOnClickListener { viewModel.newFrame() }
 
@@ -206,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                         when (mode) {
                             CanvasMode.Draw -> {
                                 stopAnimation()
-                                initCanvasView()
+                                startUpdatingCanvas()
                             }
 
                             CanvasMode.Animation -> {

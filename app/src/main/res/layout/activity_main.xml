@@ -81,6 +81,44 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/editCmdPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingHorizontal="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/topContainerBottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/discardChanges"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_discard"
+                android:tooltipText="@string/tooltip_discard_changes"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/confirmChanges"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/confirmChanges"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_confirm"
+                android:tooltipText="@string/tooltip_confirm_changes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/discardChanges"
+                app:layout_constraintTop_toTopOf="@id/discardChanges" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <ImageView
             android:id="@+id/play"

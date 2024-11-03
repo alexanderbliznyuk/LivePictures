@@ -33,9 +33,9 @@ class CanvasView @JvmOverloads constructor(
 
     var frameBuilder: FrameBuilder? = null
         set(value) {
-            field?.onDataChangedListener = null
+            field?.callbacks = null
             field = value
-            field?.onDataChangedListener = ::postInvalidate
+            field?.callbacks = frameCallbacks
 
             animationFrame = null
             //postInvalidate()
@@ -60,6 +60,14 @@ class CanvasView @JvmOverloads constructor(
             field = value
             postInvalidate()
         }
+
+    var onCmdUndoRedoChangeListener: OnUndoRedoChangeListener? = null
+        set(value) {
+            field = value
+            toggleUndoRedoListener()
+        }
+
+    var onCmdEditModeChangeListener: OnCmdEditModeChangeListener? = null
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (mode == CanvasMode.Draw && animationFrame == null) {
@@ -92,12 +100,35 @@ class CanvasView @JvmOverloads constructor(
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        frameBuilder?.onDataChangedListener = ::postInvalidate
+        frameBuilder?.callbacks = frameCallbacks
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
-        frameBuilder?.onDataChangedListener = null
+        frameBuilder?.callbacks = frameCallbacks
+    }
+
+
+    private val frameCallbacks: FrameBuilder.Callbacks = object : FrameBuilder.Callbacks {
+        override fun onChanged() {
+            postInvalidate()
+            toggleUndoRedoListener()
+        }
+
+        override fun onCmdEditStarted() {
+            onCmdEditModeChangeListener?.onChanged(true)
+        }
+
+        override fun onCmdEditEnded() {
+            onCmdEditModeChangeListener?.onChanged(false)
+        }
+    }
+
+    private fun toggleUndoRedoListener() {
+        onCmdUndoRedoChangeListener?.onChanged(
+            frameBuilder?.canUndo() == true,
+            frameBuilder?.canRedo() == true
+        )
     }
 
 
@@ -110,24 +141,46 @@ class CanvasView @JvmOverloads constructor(
     private inner class OverlayScaleGestureListener :
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            println("AABBCC scale ${detector.scaleFactor}")
-            return true
+            return frameBuilder?.onScale(detector.scaleFactor) ?: false
         }
     }
 
     private inner class OverlayRotateGestureListener :
         RotateGestureDetector.SimpleOnRotateGestureListener() {
         override fun onRotate(detector: RotateGestureDetector): Boolean {
-            println("AABBCC rotate ${detector.rotationDegreesDelta}")
-            return true
+            return frameBuilder?.onRotate(detector.rotationDegreesDelta) ?: false
         }
     }
 
     private inner class OverlayMoveGestureListener :
         MoveGestureDetector.SimpleOnMoveGestureListener() {
         override fun onMove(detector: MoveGestureDetector): Boolean {
-            println("AABBCC move ${detector.focusDelta}")
-            return true
+            val vector = detector.focusDelta
+            return frameBuilder?.onMove(vector.x, vector.y) ?: false
         }
+    }
+
+    fun confirmChanges() {
+        frameBuilder?.confirmChanges()
+    }
+
+    fun discardChanges() {
+        frameBuilder?.discardChanges()
+    }
+
+    fun undo() {
+        frameBuilder?.undo()
+    }
+
+    fun redo() {
+        frameBuilder?.redo()
+    }
+
+    fun interface OnCmdEditModeChangeListener {
+        fun onChanged(isInEditMode: Boolean)
+    }
+
+    fun interface OnUndoRedoChangeListener {
+        fun onChanged(canUndo: Boolean, canRedo: Boolean)
     }
 }

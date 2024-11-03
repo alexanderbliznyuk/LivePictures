@@ -66,9 +66,26 @@ class ErasePathCmd(
         offsetY += dy
     }
 
+    override fun restore(drawCmdData: DrawCmdData) {
+        if (drawCmdData !is ErasePathCmdData) return
+
+        points.clear()
+        path.reset()
+        minX = Float.MAX_VALUE
+        minY = Float.MAX_VALUE
+        maxX = Float.MIN_VALUE
+        maxY = Float.MIN_VALUE
+
+        drawCmdData.points.forEach { newPoint(it.x, it.y) }
+
+        offsetX = drawCmdData.offset.x
+        offsetY = drawCmdData.offset.y
+        thicknessLevel = drawCmdData.thicknessLevel
+    }
+
     override fun getDrawData(): DrawCmdData {
         return ErasePathCmdData(
-            points = points,
+            points = points.toList(),
             thicknessLevel = thicknessLevel,
             offset = Point(offsetX, offsetY)
         )
@@ -79,7 +96,7 @@ class ErasePathCmd(
         paint.strokeWidth = renderContext.convertToPx(thicknessLevel)
 
         canvas.save()
-        canvas.translate(-offsetX, -offsetY)
+        canvas.translate(offsetX, offsetY)
         canvas.drawPath(path, paint)
         canvas.restore()
     }

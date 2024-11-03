@@ -54,6 +54,24 @@ class FreePathCmd(
         points.add(Point(x, y))
     }
 
+    override fun restore(drawCmdData: DrawCmdData) {
+        if (drawCmdData !is FreePathCmdData) return
+
+        points.clear()
+        path.reset()
+        minX = Float.MAX_VALUE
+        minY = Float.MAX_VALUE
+        maxX = Float.MIN_VALUE
+        maxY = Float.MIN_VALUE
+
+        drawCmdData.points.forEach { newPoint(it.x, it.y) }
+
+        offsetX = drawCmdData.offset.x
+        offsetY = drawCmdData.offset.y
+        thicknessLevel = drawCmdData.thicknessLevel
+        color = drawCmdData.color
+    }
+
     override fun bounds(rect: RectF) {
         if (points.isNotEmpty()) {
             rect.set(minX, minY, maxX, maxY)
@@ -70,7 +88,7 @@ class FreePathCmd(
 
     override fun getDrawData(): DrawCmdData {
         return FreePathCmdData(
-            points = points,
+            points = points.toList(),
             color = color,
             thicknessLevel = thicknessLevel,
             offset = Point(offsetX, offsetY)
@@ -83,7 +101,7 @@ class FreePathCmd(
         paint.strokeWidth = renderContext.convertToPx(thicknessLevel)
 
         canvas.save()
-        canvas.translate(-offsetX, -offsetY)
+        canvas.translate(offsetX, offsetY)
         canvas.drawPath(path, paint)
 
         canvas.restore()

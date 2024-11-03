@@ -17,6 +17,9 @@ sealed class DrawCmd : Renderable {
     open fun bounds(rect: RectF) {
     }
 
+    open fun restore(drawCmdData: DrawCmdData) {
+    }
+
 
     open val isScalable: Boolean = false
     open val isMovable: Boolean = false
@@ -38,9 +41,6 @@ sealed class DrawCmd : Renderable {
 interface FreeDrawableCmd {
     fun newPoint(x: Float, y: Float)
 }
-
-
-
 
 
 sealed class ShapeCmd : DrawCmd()
