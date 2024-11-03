@@ -174,6 +174,5 @@ data class TriangleShapeCmdData(
             rotation = rotation
         )
     }
-
 }
 

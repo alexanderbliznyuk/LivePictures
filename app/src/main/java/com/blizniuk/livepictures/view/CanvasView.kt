@@ -38,7 +38,7 @@ class CanvasView @JvmOverloads constructor(
             field?.callbacks = frameCallbacks
 
             animationFrame = null
-            //postInvalidate()
+            toggleUndoRedoListener()
         }
 
     var previousFrame: Renderable? = null

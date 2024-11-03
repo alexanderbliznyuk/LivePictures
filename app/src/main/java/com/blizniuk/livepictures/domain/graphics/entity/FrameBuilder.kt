@@ -15,13 +15,13 @@ import com.blizniuk.livepictures.domain.graphics.entity.cmd.SquareShapeCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.TriangleShapeCmd
 
 class FrameBuilder(private val frame: Frame) : Renderable {
-    private val cmds: MutableList<DrawCmd> = frame.drawCmds.map { it.copy() }.toMutableList()
     private var cmdBuilder: DrawCmd? = null
     private var toolData: ToolData? = null
     private val cmdBounds = RectF()
 
     private var editCmdOriginalData: DrawCmdData? = null
-    private var isDiscardCompletely: Boolean = false
+
+    private val cmdQueue: CmdQueue = CmdQueue(frame.drawCmds)
 
     var cmdToEdit: DrawCmd? = null
         set(value) {
@@ -36,17 +36,17 @@ class FrameBuilder(private val frame: Frame) : Renderable {
             }
         }
 
-    val drawCommands: List<DrawCmd>
-        get() = cmds
-
     val id: Long
         get() = frame.id
 
     val index: Long
         get() = frame.index
 
+    val drawCommands: List<DrawCmd>
+        get() = cmdQueue.drawCmds()
+
     fun isChanged(): Boolean {
-        val isChanged = frame.drawCmds != cmds
+        val isChanged = frame.drawCmds != cmdQueue.drawCmds()
         return isChanged
     }
 
@@ -128,40 +128,53 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     }
 
     fun canUndo(): Boolean {
-        return false
+        return cmdQueue.canUndo()
     }
 
     fun undo() {
+        cmdQueue.undo()
+        notifyChange()
     }
 
     fun canRedo(): Boolean {
-        return false
+        return cmdQueue.canRedo()
     }
 
     fun redo() {
+        cmdQueue.redo()
+        notifyChange()
     }
 
     fun build(): Frame {
-        return frame.copy(drawCmds = cmds.map { it.copy() })
+        return frame.copy(drawCmds = cmdQueue.drawCmds().map { it.copy() })
     }
 
     fun confirmChanges() {
+        val cmd = cmdToEdit
+        val data = editCmdOriginalData
+        if (cmd != null && data != null) {
+            if (cmdBuilder == cmd) {
+                cmdQueue.add(cmd)
+            } else {
+                cmdQueue.modify(cmd, data)
+            }
+        }
+
         cmdToEdit = null
-        isDiscardCompletely = false
+        cmdBuilder = null
+        editCmdOriginalData = null
     }
 
     fun discardChanges() {
         val cmd = cmdToEdit
         val data = editCmdOriginalData
         if (cmd != null && data != null) {
-            if (isDiscardCompletely) {
-                cmds.remove(cmd)
-            } else {
-                cmd.restore(data)
-            }
+            cmd.restore(data)
         }
-        isDiscardCompletely = false
+
         cmdToEdit = null
+        cmdBuilder = null
+        editCmdOriginalData = null
     }
 
     private fun createCmdIfPossible(x: Float, y: Float) {
@@ -172,7 +185,6 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     color = data.color,
                     thicknessLevel = data.thicknessLevel
                 )
-                cmds += cmd
                 cmdBuilder = cmd
             }
 
@@ -180,10 +192,8 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                 val cmd = ErasePathCmd(
                     thicknessLevel = data.thicknessLevel
                 )
-                cmds += cmd
                 cmdBuilder = cmd
             }
-
 
             is ToolData.Circle -> {
                 val cmd = CircleShapeCmd(
@@ -194,9 +204,8 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     filled = data.filled
                 )
 
-                cmds += cmd
+                cmdBuilder = cmd
                 cmdToEdit = cmd
-                isDiscardCompletely = true
             }
 
             is ToolData.Square -> {
@@ -208,9 +217,8 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     filled = data.filled
                 )
 
-                cmds += cmd
+                cmdBuilder = cmd
                 cmdToEdit = cmd
-                isDiscardCompletely = true
             }
 
             is ToolData.Triangle -> {
@@ -222,9 +230,8 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     filled = data.filled
                 )
 
-                cmds += cmd
+                cmdBuilder = cmd
                 cmdToEdit = cmd
-                isDiscardCompletely = true
             }
 
             null -> Unit
@@ -232,11 +239,14 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     }
 
     private fun finishCmdBuilding() {
+        cmdBuilder?.let { cmdQueue.add(it) }
         cmdBuilder = null
+        notifyChange()
     }
 
     override fun render(canvas: Canvas, renderContext: RenderContext) {
-        cmds.forEach { it.render(canvas, renderContext) }
+        cmdQueue.drawCmds().forEach { it.render(canvas, renderContext) }
+        cmdBuilder?.render(canvas, renderContext)
         cmdToEdit?.let { drawBorder(canvas, renderContext, it) }
     }
 
@@ -286,5 +296,102 @@ class FrameBuilder(private val frame: Frame) : Renderable {
         fun onChanged()
         fun onCmdEditStarted()
         fun onCmdEditEnded()
+    }
+
+    private class CmdQueue(initial: List<DrawCmd>) {
+        private val cmds: MutableList<DrawCmd> = mutableListOf()
+
+        private val queue: MutableList<Entry> = mutableListOf()
+        private var queueHead: Int = -1
+        private var queueTotal: Int = -1
+
+        init {
+            initial.forEach { cmd -> add(cmd.copy()) }
+        }
+
+        fun add(cmd: DrawCmd) {
+            cmds += cmd
+            addQueueEntry(Entry.New(cmds.lastIndex, cmd.getDrawData()))
+        }
+
+        fun modify(cmd: DrawCmd, oldCmdData: DrawCmdData) {
+            val index = cmds.indexOf(cmd)
+            if (index < 0) return
+            addQueueEntry(Entry.Modify(index, oldCmdData, cmd.getDrawData()))
+        }
+
+        fun delete(cmd: DrawCmd) {
+            val index = cmds.indexOf(cmd)
+            if (index < 0) return
+            cmds.removeAt(index)
+            addQueueEntry(Entry.Delete(index, cmd.getDrawData()))
+        }
+
+        fun drawCmds(): List<DrawCmd> {
+            return cmds
+        }
+
+        private fun addQueueEntry(entry: Entry) {
+
+            queueHead++
+            queueTotal = queueHead
+
+            if (queueHead >= queue.size) {
+                queue += entry
+            } else {
+                queue[queueHead] = entry
+            }
+
+        }
+
+        fun canUndo(): Boolean {
+            return queueHead >= 0
+        }
+
+        fun undo() {
+            if (!canUndo()) return
+            when (val entry = queue[queueHead--]) {
+                is Entry.Delete -> {
+                    if (entry.index >= cmds.size) {
+                        cmds += entry.cmdData.toDrawCmd()
+                    } else {
+                        cmds.add(entry.index, entry.cmdData.toDrawCmd())
+                    }
+                }
+
+                is Entry.Modify -> cmds[entry.index].restore(entry.oldCmdData)
+                is Entry.New -> cmds.removeAt(entry.index)
+            }
+        }
+
+        fun canRedo(): Boolean {
+            return queueTotal >= 0 && queueTotal > queueHead
+        }
+
+        fun redo() {
+            if (!canRedo()) return
+            when (val entry = queue[++queueHead]) {
+                is Entry.Delete -> cmds.removeAt(entry.index)
+                is Entry.Modify -> cmds[entry.index].restore(entry.newCmdData)
+                is Entry.New -> {
+                    if (entry.index >= cmds.size) {
+                        cmds += entry.cmdData.toDrawCmd()
+                    } else {
+                        cmds.add(entry.index, entry.cmdData.toDrawCmd())
+                    }
+                }
+            }
+        }
+
+        private sealed interface Entry {
+            data class New(val index: Int, val cmdData: DrawCmdData) : Entry
+            data class Modify(
+                val index: Int,
+                val oldCmdData: DrawCmdData,
+                val newCmdData: DrawCmdData
+            ) : Entry
+
+            data class Delete(val index: Int, val cmdData: DrawCmdData) : Entry
+        }
     }
 }
