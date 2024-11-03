@@ -15,6 +15,7 @@ import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.state.FrameCounterState
 import com.blizniuk.livepictures.ui.home.state.LoaderUI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -42,7 +44,9 @@ class CoordinatorViewModel @Inject constructor(
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val selectedTool = MutableStateFlow(ToolId.Pencil)
-    val loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
+    private val _loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
+    val loader = _loader
+        .debounce(200L)
 
     val canvasMode: MutableStateFlow<CanvasMode> = MutableStateFlow(CanvasMode.Draw)
 
@@ -249,6 +253,16 @@ class CoordinatorViewModel @Inject constructor(
             .animateFrames()
     }
 
+    private var generateJob: Job? = null
+    fun generateFrames(canvasWidth: Float, canvasHeight: Float, count: Int) {
+        generateJob?.cancel()
+        generateJob = viewModelScope.launch {
+            showLoader("GENERATING")
+            framesRepository.autoBuilder(canvasWidth, canvasHeight, count).start()
+            dismissLoader()
+        }
+    }
+
     private suspend fun saveCurrentFrame(): Frame? {
         val currentBuilder = currentFrame.value
         val frame = currentBuilder?.build()
@@ -260,11 +274,11 @@ class CoordinatorViewModel @Inject constructor(
     }
 
     private fun showLoader(text: String) {
-        loader.value = LoaderUI(text)
+        _loader.value = LoaderUI(text)
     }
 
     private fun dismissLoader() {
-        loader.value = null
+        _loader.value = null
     }
 
 

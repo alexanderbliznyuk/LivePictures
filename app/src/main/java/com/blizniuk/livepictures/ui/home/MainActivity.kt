@@ -9,6 +9,7 @@ import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,6 +17,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
+import com.blizniuk.livepictures.databinding.DialogFrameBuilderBinding
 import com.blizniuk.livepictures.databinding.PopupMoreOptionsBinding
 import com.blizniuk.livepictures.databinding.PopupShapePickerBinding
 import com.blizniuk.livepictures.domain.graphics.ToolId
@@ -32,6 +34,7 @@ import com.blizniuk.livepictures.view.CanvasView.OnUndoRedoChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -61,7 +64,6 @@ class MainActivity : AppCompatActivity() {
             canvasView.clipToOutline = true
             canvasView.outlineProvider = RoundCornersOutlineProvider(cornerRadius)
 
-
             initTools()
             initLoader()
             initCanvasView()
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
             initPlayPause()
         }
     }
-
 
     private fun initTools() {
         binding.apply {
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 ToolId.ShapeTriangleFilled,
                 ToolId.ShapeSquare,
                 ToolId.ShapeSquareFilled,
-                )
+            )
             shapePicker.setOnClickListener {
                 showShapePickerPopup(shapePicker)
             }
@@ -376,6 +377,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             generateFrames.setOnClickListener {
+                showFrameGeneratorDialog()
                 popUp.dismiss()
             }
 
@@ -386,5 +388,32 @@ class MainActivity : AppCompatActivity() {
         }
 
         popUp.showAsDropDown(anchor, 0, 0, Gravity.END or Gravity.TOP)
+    }
+
+    private fun showFrameGeneratorDialog() {
+        val dialogBinding = DialogFrameBuilderBinding.inflate(layoutInflater)
+
+        AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setTitle(R.string.more_generate)
+            .setMessage(R.string.dialog_frame_builder_message)
+            .setPositiveButton(android.R.string.ok) { dialog, id ->
+                val count = dialogBinding.countInput.text.toString().toIntOrNull()
+                if (count == null || count <= 0) {
+                    Toast.makeText(
+                        this,
+                        R.string.dialog_frame_builder_input_error,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    viewModel.generateFrames(
+                        binding.canvasView.width.toFloat(),
+                        binding.canvasView.height.toFloat(),
+                        count
+                    )
+                }
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, id -> }
+            .show()
     }
 }

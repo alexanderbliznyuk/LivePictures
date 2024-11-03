@@ -38,6 +38,7 @@
     <string name="tooltip_shape_triangle_filled">Filled Triangle</string>
 
     <string name="color_picker_selected_color">Selected Color:</string>
+    <string name="color_picker_button_submit">Submit</string>
 
     <string name="cmd_list_title">Commands List</string>
     <string name="cmd_list_empty">Nothing has been drawn yet</string>
@@ -47,6 +48,10 @@
 
     <string name="frame_duration_title">Frame duration</string>
     <string name="frame_duration_duration">Duration: %sms</string>
+
+    <string name="dialog_frame_builder_edit_hint">Enter frame count</string>
+    <string name="dialog_frame_builder_message">Entering large number will consume a lot of storage. The total amount of frames should be less than Int.MAX_VALUE since database cursor can operate only with Int index</string>
+    <string name="dialog_frame_builder_input_error">Wrong input</string>
 
 
 </resources>

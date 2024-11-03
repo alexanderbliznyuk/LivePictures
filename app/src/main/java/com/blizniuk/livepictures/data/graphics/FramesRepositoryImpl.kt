@@ -1,14 +1,24 @@
 package com.blizniuk.livepictures.data.graphics
 
+import android.graphics.Color
+import android.graphics.PointF
+import androidx.core.graphics.ColorUtils
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.blizniuk.livepictures.data.db.FrameDao
+import com.blizniuk.livepictures.domain.graphics.AutoFrameBuilder
 import com.blizniuk.livepictures.domain.graphics.FramesRepository
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
+import com.blizniuk.livepictures.domain.graphics.entity.Point
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.CircleShapeCmdData
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmdData
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.SquareShapeCmdData
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.TriangleShapeCmdData
 import com.blizniuk.livepictures.domain.settings.AppSettings
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
+import com.blizniuk.livepictures.util.GeomUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +27,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
 
 class FramesRepositoryImpl(
     private val frameDao: FrameDao,
@@ -24,7 +37,7 @@ class FramesRepositoryImpl(
     private val settingsRepository: SettingsRepository
 ) : FramesRepository {
     override suspend fun newFrame(): Frame {
-        val lastIndex = frameDao.count()
+        val lastIndex = getLastIndex()
         val newFrame = Frame(
             id = 0,
             drawCmds = emptyList(),
@@ -160,7 +173,7 @@ class FramesRepositoryImpl(
     }
 
     private fun mapRawData(id: Long, index: Long, data: String): Frame {
-        val frameData = json.decodeFromString<FrameData>(data)
+        val frameData = deserializeFrameData(data)
 
         return Frame(
             id = id,
@@ -173,7 +186,7 @@ class FramesRepositoryImpl(
         val frameData = FrameData(
             drawCmdData = frame.drawCmds.map { it.getDrawData() },
         )
-        val encoded = json.encodeToString(frameData)
+        val encoded = serializeFrameData(frameData)
         return FrameDb(
             id = frame.id,
             index = frame.index,
@@ -181,7 +194,32 @@ class FramesRepositoryImpl(
         )
     }
 
+    fun serializeFrameData(frameData: FrameData): String {
+        return json.encodeToString(frameData)
+    }
+
+    fun deserializeFrameData(data: String): FrameData {
+        return json.decodeFromString<FrameData>(data)
+    }
+
     private suspend fun getAppSettings(): AppSettings {
         return settingsRepository.getSetting()
+    }
+
+    suspend fun getLastIndex(): Long {
+        return frameDao.count()
+    }
+
+    suspend fun batchInsert(frames: List<FrameDb>) {
+        frameDao.batchInsert(frames)
+    }
+
+
+    override fun autoBuilder(
+        canvasWidth: Float,
+        canvasHeight: Float,
+        count: Int
+    ): AutoFrameBuilder {
+        return AutoFrameBuilderImpl(this, canvasWidth, canvasHeight, count)
     }
 }

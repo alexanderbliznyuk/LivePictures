@@ -19,6 +19,8 @@ interface FramesRepository {
 
     fun animateFrames(): Flow<Frame>
 
+    fun autoBuilder(canvasWidth: Float, canvasHeight: Float, count: Int): AutoFrameBuilder
+
     fun frames(initialId: Long): Flow<PagingData<Frame>>
     fun framesCount(): Flow<Long>
 }

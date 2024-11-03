@@ -3,6 +3,8 @@ package com.blizniuk.livepictures.data.db
 import android.database.Cursor
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -11,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class FrameDao {
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    protected abstract suspend fun fastInsert(frameDb: FrameDb)
 
     @Upsert
     protected abstract suspend fun insertInternal(frameDb: FrameDb): Long
@@ -52,6 +57,11 @@ abstract class FrameDao {
     open suspend fun deleteFrame(id: Long, index: Long) {
         deleteInternal(id)
         decrementIndexes(index)
+    }
+
+    @Transaction
+    open suspend fun batchInsert(items: List<FrameDb>) {
+        items.forEach { item -> fastInsert(item) }
     }
 
     @Query("SELECT * FROM frames WHERE frame_index <= :index ORDER BY frame_index DESC LIMIT 1")
