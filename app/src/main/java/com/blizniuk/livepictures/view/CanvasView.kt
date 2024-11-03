@@ -168,6 +168,10 @@ class CanvasView @JvmOverloads constructor(
         frameBuilder?.discardChanges()
     }
 
+    fun deleteCmd() {
+        frameBuilder?.deleteEditedCmd()
+    }
+
     fun undo() {
         frameBuilder?.undo()
     }

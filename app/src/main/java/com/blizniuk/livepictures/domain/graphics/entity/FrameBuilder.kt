@@ -177,6 +177,20 @@ class FrameBuilder(private val frame: Frame) : Renderable {
         editCmdOriginalData = null
     }
 
+    fun deleteEditedCmd() {
+        val cmd = cmdToEdit
+        val data = editCmdOriginalData
+        if (cmd != null && data != null) {
+            if (cmdBuilder != cmdToEdit) {
+                cmdQueue.delete(cmd, data)
+            }
+        }
+        
+        cmdToEdit = null
+        cmdBuilder = null
+        editCmdOriginalData = null
+    }
+
     private fun createCmdIfPossible(x: Float, y: Float) {
         if (cmdBuilder != null) return
         when (val data = toolData) {
@@ -320,11 +334,11 @@ class FrameBuilder(private val frame: Frame) : Renderable {
             addQueueEntry(Entry.Modify(index, oldCmdData, cmd.getDrawData()))
         }
 
-        fun delete(cmd: DrawCmd) {
+        fun delete(cmd: DrawCmd, originalData: DrawCmdData) {
             val index = cmds.indexOf(cmd)
             if (index < 0) return
             cmds.removeAt(index)
-            addQueueEntry(Entry.Delete(index, cmd.getDrawData()))
+            addQueueEntry(Entry.Delete(index, originalData))
         }
 
         fun drawCmds(): List<DrawCmd> {

@@ -183,7 +183,9 @@ class CoordinatorViewModel @Inject constructor(
 
     fun deleteAllFrames() {
         viewModelScope.launch {
+            showLoader("")
             framesRepository.deleteAllFrames()
+            dismissLoader()
         }
     }
 

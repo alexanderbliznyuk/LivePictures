@@ -21,7 +21,7 @@
     <string name="tooltip_more_menu">More menu</string>
     <string name="tooltip_confirm_changes">Confirm changes</string>
     <string name="tooltip_discard_changes">Discard changes</string>
-    <string name="tooltip_delete_command">Delete</string>
+    <string name="tooltip_delete_command">Delete command</string>
 
     <string name="more_animation_speed">Animation Speed</string>
     <string name="more_duplicate_frame">Duplicate Frame</string>

@@ -153,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             confirmChanges.setOnClickListener { canvasView.confirmChanges() }
             discardChanges.setOnClickListener { canvasView.discardChanges() }
+            deleteCmd.setOnClickListener { canvasView.deleteCmd() }
 
             prevFrame.setOnClickListener { viewModel.prevFrame() }
             nextFrame.setOnClickListener { viewModel.nextFrame() }
