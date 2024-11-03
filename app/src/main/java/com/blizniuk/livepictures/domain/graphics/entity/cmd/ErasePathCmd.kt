@@ -107,8 +107,7 @@ class ErasePathCmd(
             isAntiAlias = true
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
-            color = Color.RED
-            isDither = true
+            color = Color.BLACK
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             pathEffect = CornerPathEffect(30F)
         }

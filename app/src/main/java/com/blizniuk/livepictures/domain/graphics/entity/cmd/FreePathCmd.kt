@@ -114,7 +114,6 @@ class FreePathCmd(
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
             color = Color.RED
-            isDither = true
             pathEffect = CornerPathEffect(30F)
         }
     }

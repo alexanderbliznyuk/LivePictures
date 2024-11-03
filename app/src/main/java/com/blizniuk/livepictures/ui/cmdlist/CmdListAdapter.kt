@@ -16,6 +16,7 @@ import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.ErasePathCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.FreePathCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.RectShapeCmd
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.TriangleShapeCmd
 import com.blizniuk.livepictures.util.RoundCornersOutlineProvider
 
 class CmdListAdapter(
@@ -95,8 +96,9 @@ class CmdListAdapter(
         return when (cmd) {
             is ErasePathCmd -> R.string.tooltip_tool_erase
             is FreePathCmd -> R.string.tooltip_tool_pencil
-            is CircleShapeCmd -> R.string.tooltip_shape_circle
-            is RectShapeCmd -> R.string.tooltip_shape_square
+            is CircleShapeCmd -> if (cmd.filled) R.string.tooltip_shape_circle_filled else R.string.tooltip_shape_circle
+            is RectShapeCmd -> if (cmd.filled) R.string.tooltip_shape_square_filled else R.string.tooltip_shape_square
+            is TriangleShapeCmd -> if (cmd.filled) R.string.tooltip_shape_triangle_filled else R.string.tooltip_shape_triangle
         }
     }
 }

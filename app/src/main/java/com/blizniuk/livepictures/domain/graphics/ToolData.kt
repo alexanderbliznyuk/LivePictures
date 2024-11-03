@@ -12,5 +12,5 @@ sealed class ToolData {
 }
 
 enum class ToolId {
-    Pencil, Erase, ShapeSquare, ShapeTriangle, ShapeCircle
+    Pencil, Erase, ShapeSquare, ShapeTriangle, ShapeCircle, ShapeSquareFilled, ShapeTriangleFilled, ShapeCircleFilled
 }

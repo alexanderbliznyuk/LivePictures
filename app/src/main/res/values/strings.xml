@@ -33,6 +33,10 @@
     <string name="tooltip_shape_circle">Circle</string>
     <string name="tooltip_shape_triangle">Triangle</string>
 
+    <string name="tooltip_shape_square_filled">Filled Square</string>
+    <string name="tooltip_shape_circle_filled">Filled Circle</string>
+    <string name="tooltip_shape_triangle_filled">Filled Triangle</string>
+
     <string name="color_picker_selected_color">Selected Color:</string>
 
     <string name="cmd_list_title">Commands List</string>

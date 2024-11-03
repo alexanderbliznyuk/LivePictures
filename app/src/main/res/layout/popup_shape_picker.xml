@@ -5,40 +5,80 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:background="@drawable/popup_bkg"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/shapeSquare"
-            style="@style/ToolButton.Tintable"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_square"
-            android:tooltipText="@string/tooltip_shape_square" />
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
 
-        <ImageView
-            android:id="@+id/shapeCircle"
-            style="@style/ToolButton.Tintable"
+            <ImageView
+                android:id="@+id/shapeSquare"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_square"
+                android:tooltipText="@string/tooltip_shape_square" />
+
+            <ImageView
+                android:id="@+id/shapeCircle"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_circle"
+                android:tooltipText="@string/tooltip_shape_circle" />
+
+            <ImageView
+                android:id="@+id/shapeTriangle"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_triangle"
+                android:tooltipText="@string/tooltip_shape_triangle" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_circle"
-            android:tooltipText="@string/tooltip_shape_circle" />
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
 
-        <ImageView
-            android:id="@+id/shapeTriangle"
-            style="@style/ToolButton.Tintable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:src="@drawable/ic_tool_triangle"
-            android:tooltipText="@string/tooltip_shape_triangle" />
+            <ImageView
+                android:id="@+id/shapeSquareFilled"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_square_filled"
+                android:tooltipText="@string/tooltip_shape_square_filled" />
 
+            <ImageView
+                android:id="@+id/shapeCircleFilled"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_circle_filled"
+                android:tooltipText="@string/tooltip_shape_circle_filled" />
+
+            <ImageView
+                android:id="@+id/shapeTriangleFilled"
+                style="@style/ToolButton.Tintable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:src="@drawable/ic_tool_triangle_filled"
+                android:tooltipText="@string/tooltip_shape_triangle_filled" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

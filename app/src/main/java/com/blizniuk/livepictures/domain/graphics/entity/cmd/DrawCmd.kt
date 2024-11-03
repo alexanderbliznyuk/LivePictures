@@ -1,6 +1,7 @@
 package com.blizniuk.livepictures.domain.graphics.entity.cmd
 
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.RectF
 import com.blizniuk.livepictures.domain.graphics.entity.Point
 import com.blizniuk.livepictures.domain.graphics.entity.RenderContext
@@ -43,23 +44,48 @@ interface FreeDrawableCmd {
 }
 
 
-sealed class ShapeCmd : DrawCmd()
+sealed class ShapeCmd(center: Point, color: Int, thicknessLevel: Float, filled: Boolean) :
+    DrawCmd() {
+    override val isMovable: Boolean = true
+    override val isScalable: Boolean = true
 
+    var filled: Boolean = filled
+    var color: Int = color
+    var thicknessLevel: Float = thicknessLevel
 
-data class CircleShapeCmd(
-    val center: Point,
-    val radius: Float,
-    val color: Int,
-    val thicknessLevel: Float,
-) : ShapeCmd()
+    protected var scale: Float = 1F
+    protected var rotationAngleDegrees: Float = 0F
 
+    protected var cx: Float = center.x
+    protected var cy: Float = center.y
 
-data class RectShapeCmd(
-    val topLeft: Point,
-    val bottomRight: Point,
-    val color: Int,
-    val thicknessLevel: Float,
-) : ShapeCmd()
+    override fun moveBy(dx: Float, dy: Float) {
+        cx += dx
+        cy += cy
+    }
+
+    override fun scaleBy(scale: Float) {
+        this.scale *= scale
+    }
+
+    override fun rotateBy(degrees: Float) {
+        rotationAngleDegrees += degrees
+    }
+
+    protected fun createPaint(filled: Boolean): Paint {
+        val style = if (filled) Paint.Style.FILL else Paint.Style.STROKE
+        return Paint().apply {
+            this.style = style
+            isAntiAlias = true
+        }
+    }
+
+    companion object {
+        val StrokePaintKey = RenderContext.newKey()
+        val FillPaintKey = RenderContext.newKey()
+    }
+}
+
 
 
 

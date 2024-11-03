@@ -315,7 +315,19 @@ class MainActivity : AppCompatActivity() {
             shapeTriangle.tag = ToolId.ShapeTriangle
             shapeCircle.tag = ToolId.ShapeCircle
 
-            val shapeViews = listOf(shapeSquare, shapeTriangle, shapeCircle)
+            shapeSquareFilled.tag = ToolId.ShapeSquareFilled
+            shapeTriangleFilled.tag = ToolId.ShapeTriangleFilled
+            shapeCircleFilled.tag = ToolId.ShapeCircleFilled
+
+            val shapeViews = listOf(
+                shapeSquare,
+                shapeTriangle,
+                shapeCircle,
+                shapeSquareFilled,
+                shapeTriangleFilled,
+                shapeCircleFilled
+            )
+
             shapeViews.forEach { toolView ->
                 toolView.isActivated = toolView.tag == currentToolId
                 toolView.setOnClickListener {

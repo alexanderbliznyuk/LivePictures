@@ -106,6 +106,9 @@ class CoordinatorViewModel @Inject constructor(
                 ToolId.ShapeSquare -> null
                 ToolId.ShapeCircle -> null
                 ToolId.ShapeTriangle -> null
+                ToolId.ShapeSquareFilled -> null
+                ToolId.ShapeCircleFilled -> null
+                ToolId.ShapeTriangleFilled -> null
             }
         }
             .filterNotNull()

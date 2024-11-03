@@ -15,7 +15,7 @@
     <dimen name="color_bar_thumb_stroke_size">1dp</dimen>
 
     <dimen name="shape_picker_popup_width">168dp</dimen>
-    <dimen name="shape_picker_popup_height">56dp</dimen>
+    <dimen name="shape_picker_popup_height">104dp</dimen>
 
     <dimen name="cmd_list_item_spacing">4dp</dimen>
 
