@@ -85,8 +85,9 @@ class CanvasView @JvmOverloads constructor(
             previousFrame?.render(canvas, renderContext)
             canvas.restoreToCount(saveCount)
         }
-
+        val saveCount = canvas.saveLayer(0F, 0F, width.toFloat(), height.toFloat(), null)
         frameBuilder?.render(canvas, renderContext)
+        canvas.restoreToCount(saveCount)
     }
 
     override fun onStart(owner: LifecycleOwner) {
