@@ -1,24 +1,28 @@
 package com.blizniuk.livepictures.domain.graphics.entity
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.MotionEvent
 import com.blizniuk.livepictures.domain.graphics.ToolData
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.CircleShapeCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmdData
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.ErasePathCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.FreeDrawableCmd
 import com.blizniuk.livepictures.domain.graphics.entity.cmd.FreePathCmd
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.SquareShapeCmd
+import com.blizniuk.livepictures.domain.graphics.entity.cmd.TriangleShapeCmd
 
 class FrameBuilder(private val frame: Frame) : Renderable {
-    private val cmds: MutableList<DrawCmd> = frame.drawCmds.toMutableList()
+    private val cmds: MutableList<DrawCmd> = frame.drawCmds.map { it.copy() }.toMutableList()
     private var cmdBuilder: DrawCmd? = null
     private var toolData: ToolData? = null
     private val cmdBounds = RectF()
 
     private var editCmdOriginalData: DrawCmdData? = null
+    private var isDiscardCompletely: Boolean = false
+
     var cmdToEdit: DrawCmd? = null
         set(value) {
             field = value
@@ -70,7 +74,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
 
         when (action) {
             MotionEvent.ACTION_DOWN -> {
-                createCmdIfPossible()
+                createCmdIfPossible(touchX, touchY)
                 if (cmdBuilder is FreeDrawableCmd) {
                     (cmdBuilder as? FreeDrawableCmd)?.newPoint(touchX, touchY)
                     notifyChange()
@@ -90,7 +94,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
                     (cmdBuilder as? FreeDrawableCmd)?.newPoint(touchX, touchY)
                     notifyChange()
                 }
-                addCmdIfPossible()
+                finishCmdBuilding()
             }
         }
     }
@@ -138,72 +142,134 @@ class FrameBuilder(private val frame: Frame) : Renderable {
     }
 
     fun build(): Frame {
-        return frame.copy(drawCmds = cmds)
+        return frame.copy(drawCmds = cmds.map { it.copy() })
     }
 
     fun confirmChanges() {
         cmdToEdit = null
+        isDiscardCompletely = false
     }
 
     fun discardChanges() {
         val cmd = cmdToEdit
         val data = editCmdOriginalData
         if (cmd != null && data != null) {
-            cmd.restore(data)
+            if (isDiscardCompletely) {
+                cmds.remove(cmd)
+            } else {
+                cmd.restore(data)
+            }
         }
-
+        isDiscardCompletely = false
         cmdToEdit = null
     }
 
-    private fun createCmdIfPossible() {
+    private fun createCmdIfPossible(x: Float, y: Float) {
         if (cmdBuilder != null) return
-        cmdBuilder = when (val data = toolData) {
-            is ToolData.Pencil -> FreePathCmd(
-                color = data.color,
-                thicknessLevel = data.thicknessLevel
-            )
+        when (val data = toolData) {
+            is ToolData.Pencil -> {
+                val cmd = FreePathCmd(
+                    color = data.color,
+                    thicknessLevel = data.thicknessLevel
+                )
+                cmds += cmd
+                cmdBuilder = cmd
+            }
 
-            is ToolData.Erase -> ErasePathCmd(
-                thicknessLevel = data.thicknessLevel
-            )
+            is ToolData.Erase -> {
+                val cmd = ErasePathCmd(
+                    thicknessLevel = data.thicknessLevel
+                )
+                cmds += cmd
+                cmdBuilder = cmd
+            }
 
-            null -> return
+
+            is ToolData.Circle -> {
+                val cmd = CircleShapeCmd(
+                    center = Point(x, y),
+                    circleRadius = 100F,
+                    color = data.color,
+                    thicknessLevel = data.thicknessLevel,
+                    filled = data.filled
+                )
+
+                cmds += cmd
+                cmdToEdit = cmd
+                isDiscardCompletely = true
+            }
+
+            is ToolData.Square -> {
+                val cmd = SquareShapeCmd(
+                    center = Point(x, y),
+                    halfSize = 100F,
+                    color = data.color,
+                    thicknessLevel = data.thicknessLevel,
+                    filled = data.filled
+                )
+
+                cmds += cmd
+                cmdToEdit = cmd
+                isDiscardCompletely = true
+            }
+
+            is ToolData.Triangle -> {
+                val cmd = TriangleShapeCmd(
+                    center = Point(x, y),
+                    radius = 100F,
+                    color = data.color,
+                    thicknessLevel = data.thicknessLevel,
+                    filled = data.filled
+                )
+
+                cmds += cmd
+                cmdToEdit = cmd
+                isDiscardCompletely = true
+            }
+
+            null -> Unit
         }
     }
 
-    private fun addCmdIfPossible() {
-        val cmd = cmdBuilder
-        if (cmd != null) {
-            cmds += cmd
-        }
-
+    private fun finishCmdBuilding() {
         cmdBuilder = null
     }
 
     override fun render(canvas: Canvas, renderContext: RenderContext) {
         cmds.forEach { it.render(canvas, renderContext) }
-        cmdBuilder?.render(canvas, renderContext)
-
         cmdToEdit?.let { drawBorder(canvas, renderContext, it) }
     }
 
     private fun drawBorder(canvas: Canvas, renderContext: RenderContext, cmd: DrawCmd) {
         cmd.bounds(cmdBounds)
         if (!cmdBounds.isEmpty) {
-            val paint = renderContext.get(BorderPaintKey) {
-                val borderSize = renderContext.convertToPx(2F)
+            val fillPaint = renderContext.get(FillPaintKey) {
+                createFillPaint()
+            }
+            canvas.drawRect(cmdBounds, fillPaint)
+
+            val strokePaint = renderContext.get(BorderPaintKey) {
+                val borderSize = renderContext.convertToPx(1F)
                 createBorderPaint(borderSize)
             }
-            canvas.drawRect(cmdBounds, paint)
+            canvas.drawRect(cmdBounds, strokePaint)
         }
     }
 
     private fun createBorderPaint(borderWidth: Float): Paint {
         return Paint().apply {
             isAntiAlias = true
-            color = Color.GREEN
+            color = 0xFF0078D7.toInt()
             style = Paint.Style.STROKE
             strokeWidth = borderWidth
+        }
+    }
+
+    private fun createFillPaint(): Paint {
+        return Paint().apply {
+            isAntiAlias = true
+            color = 0x330078D7
+            style = Paint.Style.FILL
         }
     }
 
@@ -213,6 +279,7 @@ class FrameBuilder(private val frame: Frame) : Renderable {
 
     private companion object {
         private val BorderPaintKey = RenderContext.newKey()
+        private val FillPaintKey = RenderContext.newKey()
     }
 
     interface Callbacks {

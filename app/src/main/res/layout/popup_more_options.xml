@@ -25,7 +25,7 @@
             style="@style/MoreMenuItem"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="@string/more_copy_frame" />
+            android:text="@string/more_duplicate_frame" />
 
         <TextView
             android:id="@+id/exportGif"

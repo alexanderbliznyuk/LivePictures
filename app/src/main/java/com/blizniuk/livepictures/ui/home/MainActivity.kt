@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
             initTools()
             initLoader()
             initCanvasView()
-            initFrameCounter()
             initTopCommands()
             initPlayPause()
         }
@@ -85,7 +84,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val shapesIds = setOf(ToolId.ShapeCircle, ToolId.ShapeTriangle, ToolId.ShapeSquare)
+            val shapesIds = setOf(
+                ToolId.ShapeCircle,
+                ToolId.ShapeCircleFilled,
+                ToolId.ShapeTriangle,
+                ToolId.ShapeTriangleFilled,
+                ToolId.ShapeSquare,
+                ToolId.ShapeSquareFilled,
+                )
             shapePicker.setOnClickListener {
                 showShapePickerPopup(shapePicker)
             }
@@ -144,16 +150,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun initCanvasView() {
         binding.apply {
+            confirmChanges.setOnClickListener { canvasView.confirmChanges() }
+            discardChanges.setOnClickListener { canvasView.discardChanges() }
+
+            prevFrame.setOnClickListener { viewModel.prevFrame() }
+            nextFrame.setOnClickListener { viewModel.nextFrame() }
+
             canvasView.onCmdEditModeChangeListener = OnCmdEditModeChangeListener { isInEditMode ->
                 topToolPanel.isVisible = !isInEditMode
                 bottomToolPanel.isVisible = !isInEditMode
                 play.isVisible = !isInEditMode
 
+                prevFrame.isVisible = !isInEditMode
+                nextFrame.isVisible = !isInEditMode
+
                 editCmdPanel.isVisible = isInEditMode
-
-
-                confirmChanges.setOnClickListener { canvasView.confirmChanges() }
-                discardChanges.setOnClickListener { canvasView.discardChanges() }
             }
 
             canvasView.onCmdUndoRedoChangeListener = OnUndoRedoChangeListener { canUndo, canRedo ->
@@ -181,6 +192,15 @@ class MainActivity : AppCompatActivity() {
                         canvasView.previousFrame = frame
                     }
                 }
+
+                launch {
+                    viewModel.counterState.collect { state ->
+                        prevFrame.isEnabled = state.prevEnabled
+                        nextFrame.isEnabled = state.nextEnabled
+                        totalFrames.text = state.total
+                        currentFrameIndex.text = state.currentIndex
+                    }
+                }
             }
         }
     }
@@ -189,21 +209,6 @@ class MainActivity : AppCompatActivity() {
     private fun stopUpdatingCanvas() {
         canvasUpdatesJob?.cancel()
         canvasUpdatesJob = null
-    }
-
-    private fun initFrameCounter() {
-        binding.apply {
-            prevFrame.setOnClickListener { viewModel.prevFrame() }
-            nextFrame.setOnClickListener { viewModel.nextFrame() }
-            repeatOnStart {
-                viewModel.counterState.collect { state ->
-                    prevFrame.isEnabled = state.prevEnabled
-                    nextFrame.isEnabled = state.nextEnabled
-                    totalFrames.text = state.total
-                    currentFrameIndex.text = state.currentIndex
-                }
-            }
-        }
     }
 
     private fun initTopCommands() {
@@ -267,10 +272,6 @@ class MainActivity : AppCompatActivity() {
         if (animationJob != null) {
             animationJob?.cancel()
             animationJob = null
-
-//            binding.apply {
-//                (canvasView.animationFrame)?.let { viewModel.selectActiveFrame(it) }
-//            }
         }
     }
 

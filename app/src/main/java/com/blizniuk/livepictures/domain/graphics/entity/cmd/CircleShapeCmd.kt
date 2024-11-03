@@ -13,7 +13,15 @@ class CircleShapeCmd(
     color: Int,
     thicknessLevel: Float,
     filled: Boolean,
-) : ShapeCmd(center = center, color = color, thicknessLevel = thicknessLevel, filled = filled) {
+    scale: Float = 1F
+) : ShapeCmd(
+    center = center,
+    color = color,
+    thicknessLevel = thicknessLevel,
+    filled = filled,
+    scale = scale,
+    rotation = 0F
+) {
 
     override val isMovable: Boolean = true
     override val isScalable: Boolean = true
@@ -34,6 +42,17 @@ class CircleShapeCmd(
         thicknessLevel = drawCmdData.thicknessLevel
         filled = drawCmdData.filled
         color = drawCmdData.color
+    }
+
+    override fun copy(): CircleShapeCmd {
+        return CircleShapeCmd(
+            center = Point(cx, cy),
+            circleRadius = radius,
+            color = color,
+            thicknessLevel = thicknessLevel,
+            filled = filled,
+            scale = scale
+        )
     }
 
     override fun getDrawData(): CircleShapeCmdData {
@@ -60,6 +79,22 @@ class CircleShapeCmd(
         paint.color = color
         canvas.drawCircle(cx, cy, radius * scale, paint)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CircleShapeCmd) return false
+        if (!super.equals(other)) return false
+
+        if (radius != other.radius) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + radius.hashCode()
+        return result
+    }
 }
 
 
@@ -72,4 +107,15 @@ data class CircleShapeCmdData(
     @SerialName("thickness_level") val thicknessLevel: Float,
     @SerialName("scale") val scale: Float,
     @SerialName("filled") val filled: Boolean,
-) : DrawCmdData()
+) : DrawCmdData() {
+    override fun toDrawCmd(): DrawCmd {
+        return CircleShapeCmd(
+            center = center,
+            circleRadius = radius,
+            color = color,
+            thicknessLevel = thicknessLevel,
+            filled = filled,
+            scale = scale
+        )
+    }
+}

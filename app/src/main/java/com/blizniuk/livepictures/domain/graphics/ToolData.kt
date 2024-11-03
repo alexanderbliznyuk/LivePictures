@@ -9,6 +9,25 @@ sealed class ToolData {
     data class Erase(
         val thicknessLevel: Float,
     ): ToolData()
+
+    data class Square(
+        val thicknessLevel: Float,
+        val color: Int,
+        val filled: Boolean
+    ): ToolData()
+
+    data class Circle(
+        val thicknessLevel: Float,
+        val color: Int,
+        val filled: Boolean
+    ): ToolData()
+
+    data class Triangle(
+        val thicknessLevel: Float,
+        val color: Int,
+        val filled: Boolean
+    ): ToolData()
+
 }
 
 enum class ToolId {

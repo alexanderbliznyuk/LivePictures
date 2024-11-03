@@ -72,6 +72,17 @@ class FreePathCmd(
         color = drawCmdData.color
     }
 
+    override fun copy(): FreePathCmd {
+        return FreePathCmd(
+            points = points.toList(),
+            color = color,
+            thicknessLevel = thicknessLevel,
+            offset = Point(offsetX, offsetY)
+        )
+    }
+
+
+
     override fun bounds(rect: RectF) {
         if (points.isNotEmpty()) {
             rect.set(minX, minY, maxX, maxY)
@@ -116,6 +127,30 @@ class FreePathCmd(
             color = Color.RED
             pathEffect = CornerPathEffect(30F)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as FreePathCmd
+
+        if (color != other.color) return false
+        if (thicknessLevel != other.thicknessLevel) return false
+        if (points != other.points) return false
+        if (offsetX != other.offsetX) return false
+        if (offsetY != other.offsetY) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = color
+        result = 31 * result + thicknessLevel.hashCode()
+        result = 31 * result + points.hashCode()
+        result = 31 * result + offsetX.hashCode()
+        result = 31 * result + offsetY.hashCode()
+        return result
     }
 
     private companion object {

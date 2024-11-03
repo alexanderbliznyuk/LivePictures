@@ -1,23 +1,21 @@
 package com.blizniuk.livepictures.domain.graphics.entity.cmd
 
 import android.graphics.Canvas
-import android.graphics.Path
 import android.graphics.RectF
 import com.blizniuk.livepictures.domain.graphics.entity.Point
 import com.blizniuk.livepictures.domain.graphics.entity.RenderContext
-import com.blizniuk.livepictures.util.GeomUtils.max3
-import com.blizniuk.livepictures.util.GeomUtils.min3
+import com.blizniuk.livepictures.util.GeomUtils.max4
+import com.blizniuk.livepictures.util.GeomUtils.min4
 import com.blizniuk.livepictures.util.GeomUtils.rotateX
 import com.blizniuk.livepictures.util.GeomUtils.rotateY
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class TriangleShapeCmd(
+class SquareShapeCmd(
     center: Point,
-    radius: Float,
+    halfSize: Float,
     color: Int,
     thicknessLevel: Float,
     filled: Boolean,
@@ -28,51 +26,26 @@ class TriangleShapeCmd(
     color = color,
     thicknessLevel = thicknessLevel,
     filled = filled,
-    scale,
-    rotation
+    scale = scale,
+    rotation = rotation,
 ) {
     override val isMovable: Boolean = true
     override val isScalable: Boolean = true
     override val isRotatable: Boolean = true
 
-    private var radius: Float = radius
-    private val path = Path()
+    private var halfSize: Float = halfSize
 
     override fun bounds(rect: RectF) {
-        val scaledRadius = radius * scale
-
-        val leftX = cx - scaledRadius * Cos30
-        val rightX = cx + scaledRadius * Cos30
-
-        val topY = cy - scaledRadius
-        val bottomY = cy + scaledRadius * Cos60
-
-        val angle = Math.toRadians(rotationAngleDegrees.toDouble())
-        val cos = cos(angle).toFloat()
-        val sin = sin(angle).toFloat()
-
-        val x1 = rotateX(cx, topY, cx, cy, cos, sin)
-        val y1 = rotateY(cx, topY, cx, cy, cos, sin)
-
-        val x2 = rotateX(leftX, bottomY, cx, cy, cos, sin)
-        val y2 = rotateY(leftX, bottomY, cx, cy, cos, sin)
-
-        val x3 = rotateX(rightX, bottomY, cx, cy, cos, sin)
-        val y3 = rotateY(rightX, bottomY, cx, cy, cos, sin)
-
-
-        rect.left = min3(x1, x2, x3)
-        rect.top = min3(y1, y2, y3)
-
-        rect.right = max3(x1, x2, x3)
-        rect.bottom = max3(y1, y2, y3)
+        val scaledSize = halfSize * scale
+        rect.set(cx - scaledSize, cy - scaledSize, cx + scaledSize, cy + scaledSize)
+        rotateRect(rect, rotationAngleDegrees)
     }
 
     override fun restore(drawCmdData: DrawCmdData) {
-        if (drawCmdData !is TriangleShapeCmdData) return
+        if (drawCmdData !is SquareShapeCmdData) return
         cx = drawCmdData.center.x
         cy = drawCmdData.center.y
-        radius = drawCmdData.radius
+        halfSize = drawCmdData.halfSize
         thicknessLevel = drawCmdData.thicknessLevel
         color = drawCmdData.color
         filled = drawCmdData.filled
@@ -80,10 +53,10 @@ class TriangleShapeCmd(
         rotationAngleDegrees = drawCmdData.rotation
     }
 
-    override fun copy(): TriangleShapeCmd {
-        return TriangleShapeCmd(
+    override fun copy(): SquareShapeCmd {
+        return SquareShapeCmd(
             center = Point(cx, cy),
-            radius = radius,
+            halfSize = halfSize,
             color = color,
             thicknessLevel = thicknessLevel,
             filled = filled,
@@ -92,10 +65,10 @@ class TriangleShapeCmd(
         )
     }
 
-    override fun getDrawData(): TriangleShapeCmdData {
-        return TriangleShapeCmdData(
+    override fun getDrawData(): SquareShapeCmdData {
+        return SquareShapeCmdData(
             center = Point(cx, cy),
-            radius = radius,
+            halfSize = halfSize,
             color = color,
             thicknessLevel = thicknessLevel,
             filled = filled,
@@ -115,48 +88,67 @@ class TriangleShapeCmd(
         }
 
         paint.color = color
-
-        path.reset()
-
-        val scaledRadius = radius * scale
-        path.moveTo(cx - scaledRadius * Cos30, cy + scaledRadius * Cos60)
-        path.lineTo(cx + scaledRadius * Cos30, cy + scaledRadius * Cos60)
-        path.lineTo(cx, cy - scaledRadius)
-        path.close()
-
+        val scaledSize = halfSize * scale
         canvas.save()
         canvas.rotate(rotationAngleDegrees, cx, cy)
-        canvas.drawPath(path, paint)
+        canvas.drawRect(cx - scaledSize, cy - scaledSize, cx + scaledSize, cy + scaledSize, paint)
         canvas.restore()
+    }
+
+    private fun rotateRect(rect: RectF, angleDegrees: Float) {
+        val cx = rect.centerX()
+        val cy = rect.centerY()
+
+        val left = rect.left
+        val right = rect.right
+        val top = rect.top
+        val bottom = rect.bottom
+
+        val angle = Math.toRadians(angleDegrees.toDouble())
+        val cos = cos(angle).toFloat()
+        val sin = sin(angle).toFloat()
+
+        val x1 = rotateX(left, top, cx, cy, cos, sin)
+        val y1 = rotateY(left, top, cx, cy, cos, sin)
+
+        val x2 = rotateX(right, top, cx, cy, cos, sin)
+        val y2 = rotateY(right, top, cx, cy, cos, sin)
+
+        val x3 = rotateX(right, bottom, cx, cy, cos, sin)
+        val y3 = rotateY(right, bottom, cx, cy, cos, sin)
+
+        val x4 = rotateX(left, bottom, cx, cy, cos, sin)
+        val y4 = rotateY(left, bottom, cx, cy, cos, sin)
+
+        rect.left = min4(x1, x2, x3, x4)
+        rect.top = min4(y1, y2, y3, y4)
+
+        rect.right = max4(x1, x2, x3, x4)
+        rect.bottom = max4(y1, y2, y3, y4)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is TriangleShapeCmd) return false
+        if (other !is SquareShapeCmd) return false
         if (!super.equals(other)) return false
 
-        if (radius != other.radius) return false
+        if (halfSize != other.halfSize) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + radius.hashCode()
+        result = 31 * result + halfSize.hashCode()
         return result
-    }
-
-    private companion object {
-        private val Cos60 = cos(PI / 3).toFloat()
-        private val Cos30 = cos(PI / 6).toFloat()
     }
 }
 
 @Serializable
-@SerialName("triangle_shape")
-data class TriangleShapeCmdData(
+@SerialName("square_shape")
+data class SquareShapeCmdData(
     @SerialName("center") val center: Point,
-    @SerialName("radius") val radius: Float,
+    @SerialName("half_size") val halfSize: Float,
     @SerialName("color") val color: Int,
     @SerialName("thickness_level") val thicknessLevel: Float,
     @SerialName("filled") val filled: Boolean,
@@ -164,9 +156,9 @@ data class TriangleShapeCmdData(
     @SerialName("rotation") val rotation: Float,
 ) : DrawCmdData() {
     override fun toDrawCmd(): DrawCmd {
-        return TriangleShapeCmd(
+        return SquareShapeCmd(
             center = center,
-            radius = radius,
+            halfSize = halfSize,
             color = color,
             thicknessLevel = thicknessLevel,
             filled = filled,

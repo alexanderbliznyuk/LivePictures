@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
@@ -75,6 +74,7 @@ class CoordinatorViewModel @Inject constructor(
                 nextEnabled = nextEnabled
             )
         }
+            .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
 
     private val toolData: StateFlow<ToolData?>
@@ -103,12 +103,35 @@ class CoordinatorViewModel @Inject constructor(
                     ToolData.Erase(thicknessLevel = thickness)
                 }
 
-                ToolId.ShapeSquare -> null
-                ToolId.ShapeCircle -> null
-                ToolId.ShapeTriangle -> null
-                ToolId.ShapeSquareFilled -> null
-                ToolId.ShapeCircleFilled -> null
-                ToolId.ShapeTriangleFilled -> null
+                ToolId.ShapeSquare,
+                ToolId.ShapeSquareFilled -> {
+                    val isFilled = tool == ToolId.ShapeSquareFilled
+                    ToolData.Square(
+                        thicknessLevel = settings.penThicknessLevel,
+                        color = settings.color,
+                        filled = isFilled
+                    )
+                }
+
+                ToolId.ShapeCircle,
+                ToolId.ShapeCircleFilled -> {
+                    val isFilled = tool == ToolId.ShapeCircleFilled
+                    ToolData.Circle(
+                        thicknessLevel = settings.penThicknessLevel,
+                        color = settings.color,
+                        filled = isFilled
+                    )
+                }
+
+                ToolId.ShapeTriangle,
+                ToolId.ShapeTriangleFilled -> {
+                    val isFilled = tool == ToolId.ShapeTriangleFilled
+                    ToolData.Triangle(
+                        thicknessLevel = settings.penThicknessLevel,
+                        color = settings.color,
+                        filled = isFilled
+                    )
+                }
             }
         }
             .filterNotNull()
@@ -189,7 +212,7 @@ class CoordinatorViewModel @Inject constructor(
             saveCurrentFrame()
             val result = framesRepository.copyCurrentFrame()
             if (result != null) {
-                toasts.tryEmit(R.string.toast_frame_copied)
+                toasts.tryEmit(R.string.toast_frame_duplicated)
             }
         }
     }

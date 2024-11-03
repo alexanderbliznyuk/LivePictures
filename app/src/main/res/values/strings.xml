@@ -24,7 +24,7 @@
     <string name="tooltip_delete_command">Delete</string>
 
     <string name="more_animation_speed">Animation Speed</string>
-    <string name="more_copy_frame">Copy Frame</string>
+    <string name="more_duplicate_frame">Duplicate Frame</string>
     <string name="more_export">Export as GIF</string>
     <string name="more_generate">Generate Frames</string>
     <string name="more_delete_all">Delete All</string>
@@ -43,7 +43,7 @@
     <string name="cmd_list_empty">Nothing has been drawn yet</string>
 
     <string name="toast_new_frame_created">New frame is created</string>
-    <string name="toast_frame_copied">Current frame is copied</string>
+    <string name="toast_frame_duplicated">Current frame is duplicated</string>
 
     <string name="frame_duration_title">Frame duration</string>
     <string name="frame_duration_duration">Duration: %sms</string>
