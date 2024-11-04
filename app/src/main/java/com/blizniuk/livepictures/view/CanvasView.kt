@@ -18,7 +18,7 @@ import com.blizniuk.livepictures.util.gesture.MoveGestureDetector
 import com.blizniuk.livepictures.util.gesture.RotateGestureDetector
 
 class CanvasView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0,
 ) : View(context, attrs, defStyleAttr), DefaultLifecycleObserver {
 
     private val renderContext = RenderContext(context)
@@ -50,6 +50,7 @@ class CanvasView @JvmOverloads constructor(
     var mode: CanvasMode = CanvasMode.Draw
         set(value) {
             field = value
+            keepScreenOn = mode == CanvasMode.Animation
             if (value == CanvasMode.Draw) {
                 animationFrame = null
             }
