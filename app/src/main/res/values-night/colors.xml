@@ -4,4 +4,5 @@
     <color name="icon_button_enabled">@color/white</color>
 
     <color name="color_border_color">#8B8B8B</color>
+    <color name="thickness_picker_thumb">@color/white</color>
 </resources>

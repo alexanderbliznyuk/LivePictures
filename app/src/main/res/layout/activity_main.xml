@@ -223,8 +223,8 @@
             style="@style/ToolButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:layout_constraintBottom_toTopOf="@id/bottomContainerTop"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@id/toolConfigPaneAnchor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -256,6 +256,38 @@
             android:tooltipText="@string/tooltip_next_frame"
             app:layout_constraintStart_toEndOf="@id/totalFrames"
             app:layout_constraintTop_toTopOf="@id/prevFrame" />
+
+        <Space
+            android:id="@+id/toolConfigPaneAnchor"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            app:layout_constraintBottom_toBottomOf="@id/bottomContainerTop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <FrameLayout
+            android:id="@+id/toolConfigPane"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/toolConfigPaneAnchor"
+            app:layout_constraintTop_toTopOf="@id/toolConfigPaneAnchor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.blizniuk.livepictures.view.ThicknessSeekBar
+                android:id="@+id/penThicknessPicker"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <com.blizniuk.livepictures.view.ThicknessSeekBar
+                android:id="@+id/eraseThicknessPicker"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomToolPanel"
@@ -360,6 +392,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/loader_overlay"
+        android:visibility="gone"
         android:clickable="true">
 
         <androidx.core.widget.ContentLoadingProgressBar

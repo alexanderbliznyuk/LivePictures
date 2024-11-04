@@ -8,26 +8,31 @@ sealed class ToolData {
 
     data class Erase(
         val thicknessLevel: Float,
-    ): ToolData()
+    ) : ToolData()
 
     data class Square(
         val thicknessLevel: Float,
         val color: Int,
-        val filled: Boolean
-    ): ToolData()
+        val filled: Boolean,
+    ) : ToolData()
 
     data class Circle(
         val thicknessLevel: Float,
         val color: Int,
-        val filled: Boolean
-    ): ToolData()
+        val filled: Boolean,
+    ) : ToolData()
 
     data class Triangle(
         val thicknessLevel: Float,
         val color: Int,
-        val filled: Boolean
-    ): ToolData()
+        val filled: Boolean,
+    ) : ToolData()
 
+
+    companion object {
+        const val MinThickness = 2F
+        const val MaxThickness = 20F
+    }
 }
 
 enum class ToolId {

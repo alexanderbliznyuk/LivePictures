@@ -109,6 +109,14 @@ class MainActivity : AppCompatActivity() {
                 showMoreMenuPopup(moreMenu)
             }
 
+            penThicknessPicker.onThicknessChanged = {
+                viewModel.setPathThickness(it)
+            }
+
+            eraseThicknessPicker.onThicknessChanged = {
+                viewModel.setEraseThickness(it)
+            }
+
             repeatOnStart {
                 launch {
                     viewModel.selectedTool
@@ -118,17 +126,33 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             shapePicker.isActivated = tool in shapesIds
+                            penThicknessPicker.isVisible = tool == ToolId.Pencil || tool in shapesIds
+                            eraseThicknessPicker.isVisible = tool == ToolId.Erase
                         }
                 }
 
                 launch {
                     viewModel.selectedColor.collect { color ->
-                        binding.chosenColor.imageTintList = ColorStateList.valueOf(color)
+                        chosenColor.imageTintList = ColorStateList.valueOf(color)
+                    }
+                }
+
+                launch {
+                    viewModel.pathThickness.collect { thickness ->
+                        penThicknessPicker.setThickness(thickness)
+                    }
+                }
+
+                launch {
+                    viewModel.eraseThickness.collect { thickness ->
+                        eraseThicknessPicker.setThickness(thickness)
                     }
                 }
             }
         }
     }
+
+
 
     private fun initLoader() {
         binding.apply {
@@ -165,6 +189,7 @@ class MainActivity : AppCompatActivity() {
 
                 prevFrame.isVisible = !isInEditMode
                 nextFrame.isVisible = !isInEditMode
+                toolConfigPane.isVisible = !isInEditMode
 
                 editCmdPanel.isVisible = isInEditMode
             }
@@ -299,6 +324,7 @@ class MainActivity : AppCompatActivity() {
             bottomToolPanel.isVisible = !isAnimation
             prevFrame.isVisible = !isAnimation
             nextFrame.isVisible = !isAnimation
+            toolConfigPane.isVisible = !isAnimation
         }
     }
 

@@ -58,7 +58,7 @@ class SettingsRepositoryImpl(
             defaultFrameDurationMs = 250,
             pathThicknessLevel = 2F,
             eraseToolThicknessLevel = 10F,
-            selectedColor = Color.BLUE,
+            selectedColor = 0xFF641580.toInt(),
             currentFrameId = -1,
             playbackSpeedFactor = 1F
         )

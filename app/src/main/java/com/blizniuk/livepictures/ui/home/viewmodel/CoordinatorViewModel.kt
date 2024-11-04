@@ -53,6 +53,14 @@ class CoordinatorViewModel @Inject constructor(
     private val settingsShared = settingsRepository.currentAppSettings()
         .shareIn(viewModelScope, SharingStarted.Eagerly, 1)
 
+    val pathThickness = settingsShared
+        .map { it.pathThicknessLevel }
+        .distinctUntilChanged()
+
+    val eraseThickness = settingsShared
+        .map { it.eraseToolThicknessLevel }
+        .distinctUntilChanged()
+
     val currentFrame: StateFlow<FrameBuilder?> = settingsShared
         .map { it.currentFrameId }
         .distinctUntilChanged()
@@ -108,7 +116,8 @@ class CoordinatorViewModel @Inject constructor(
                 }
 
                 ToolId.ShapeSquare,
-                ToolId.ShapeSquareFilled -> {
+                ToolId.ShapeSquareFilled,
+                    -> {
                     val isFilled = tool == ToolId.ShapeSquareFilled
                     ToolData.Square(
                         thicknessLevel = settings.penThicknessLevel,
@@ -118,7 +127,8 @@ class CoordinatorViewModel @Inject constructor(
                 }
 
                 ToolId.ShapeCircle,
-                ToolId.ShapeCircleFilled -> {
+                ToolId.ShapeCircleFilled,
+                    -> {
                     val isFilled = tool == ToolId.ShapeCircleFilled
                     ToolData.Circle(
                         thicknessLevel = settings.penThicknessLevel,
@@ -128,7 +138,8 @@ class CoordinatorViewModel @Inject constructor(
                 }
 
                 ToolId.ShapeTriangle,
-                ToolId.ShapeTriangleFilled -> {
+                ToolId.ShapeTriangleFilled,
+                    -> {
                     val isFilled = tool == ToolId.ShapeTriangleFilled
                     ToolData.Triangle(
                         thicknessLevel = settings.penThicknessLevel,
@@ -263,6 +274,18 @@ class CoordinatorViewModel @Inject constructor(
             saveCurrentFrame()
             framesRepository.autoBuilder(canvasWidth, canvasHeight, count).start()
             dismissLoader()
+        }
+    }
+
+    fun setPathThickness(value: Float) {
+        viewModelScope.launch {
+            settingsRepository.setPathThicknessLevel(value)
+        }
+    }
+
+    fun setEraseThickness(value: Float) {
+        viewModelScope.launch {
+            settingsRepository.setEraseToolThicknessLevel(value)
         }
     }
 

@@ -8,4 +8,6 @@
     <color name="loader_overlay">#99000000</color>
     <color name="icon_button_disabled">#8B8B8B</color>
     <color name="icon_button_enabled">@color/black</color>
+
+    <color name="thickness_picker_thumb">#8B8B8B</color>
 </resources>
