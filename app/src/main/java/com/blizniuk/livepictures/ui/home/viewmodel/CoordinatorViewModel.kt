@@ -305,6 +305,8 @@ class CoordinatorViewModel @Inject constructor(
                 dismissLoader()
             }
 
+            saveCurrentFrame()
+
             withContext(Dispatchers.IO) {
                 val exporter = framesRepository.getGifExporter()
                 val path = exporter.export(width, height)
