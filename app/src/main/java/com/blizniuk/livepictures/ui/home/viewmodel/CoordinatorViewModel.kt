@@ -1,5 +1,6 @@
 package com.blizniuk.livepictures.ui.home.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -14,7 +15,9 @@ import com.blizniuk.livepictures.domain.settings.SettingsRepository
 import com.blizniuk.livepictures.ui.home.state.CanvasMode
 import com.blizniuk.livepictures.ui.home.state.FrameCounterState
 import com.blizniuk.livepictures.ui.home.state.LoaderUI
+import com.blizniuk.livepictures.ui.home.state.ToastUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,7 +42,7 @@ class CoordinatorViewModel @Inject constructor(
     private val framesRepository: FramesRepository,
 ) : ViewModel(), DefaultLifecycleObserver {
 
-    val toasts = MutableSharedFlow<Int>(
+    val toasts = MutableSharedFlow<ToastUi>(
         extraBufferCapacity = 2,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
@@ -179,7 +183,7 @@ class CoordinatorViewModel @Inject constructor(
         viewModelScope.launch {
             saveCurrentFrame()
             framesRepository.newFrame()
-            toasts.tryEmit(R.string.toast_new_frame_created)
+            toasts.tryEmit(ToastUi.PlainRes(R.string.toast_new_frame_created))
         }
     }
 
@@ -229,7 +233,7 @@ class CoordinatorViewModel @Inject constructor(
             saveCurrentFrame()
             val result = framesRepository.copyCurrentFrame()
             if (result != null) {
-                toasts.tryEmit(R.string.toast_frame_duplicated)
+                toasts.tryEmit(ToastUi.PlainRes(R.string.toast_frame_duplicated))
             }
         }
     }
@@ -289,6 +293,33 @@ class CoordinatorViewModel @Inject constructor(
     fun setEraseThickness(value: Float) {
         viewModelScope.launch {
             settingsRepository.setEraseToolThicknessLevel(value)
+        }
+    }
+
+    private var exportJob: Job? = null
+    fun exportGif(width: Int, height: Int) {
+        exportJob?.cancel()
+        exportJob = viewModelScope.launch {
+            showLoader(R.string.loader_exporting) {
+                exportJob?.cancel()
+                dismissLoader()
+            }
+
+            withContext(Dispatchers.IO) {
+                val exporter = framesRepository.getGifExporter()
+                val path = exporter.export(width, height)
+                if (path != null) {
+                    toasts.tryEmit(
+                        ToastUi.PlainRes(
+                            resId = R.string.toast_export_successful,
+                            params = arrayOf(path),
+                            duration = Toast.LENGTH_LONG,
+                        )
+                    )
+                }
+            }
+
+            dismissLoader()
         }
     }
 

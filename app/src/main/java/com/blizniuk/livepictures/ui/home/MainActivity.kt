@@ -185,14 +185,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 launch {
-                    viewModel.toasts.collect { textId ->
-                        Toast.makeText(this@MainActivity, textId, Toast.LENGTH_SHORT).show()
+                    viewModel.toasts.collect { ui ->
+                        val text = ui.getText(this@MainActivity)
+                        Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
-
 
     private fun initCanvasView() {
         binding.apply {
@@ -399,16 +399,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showMoreMenuPopup(anchor: View) {
-        val binding = PopupMoreOptionsBinding.inflate(layoutInflater)
+        val popupBinding = PopupMoreOptionsBinding.inflate(layoutInflater)
         val popUp = PopupWindow(this)
-        popUp.contentView = binding.root
+        popUp.contentView = popupBinding.root
         popUp.setBackgroundDrawable(null)
         popUp.width = ViewGroup.LayoutParams.WRAP_CONTENT
         popUp.height = resources.getDimensionPixelSize(R.dimen.more_menu_popup_height)
         popUp.isFocusable = true
         popUp.elevation = 0F
 
-        binding.apply {
+        popupBinding.apply {
             animationSpeed.setOnClickListener {
                 FrameDurationPickerFragment.newInstance()
                     .show(supportFragmentManager, "Duration Picker")
@@ -422,6 +422,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             exportGif.setOnClickListener {
+                viewModel.exportGif(binding.canvasView.width, binding.canvasView.height)
                 popUp.dismiss()
             }
 

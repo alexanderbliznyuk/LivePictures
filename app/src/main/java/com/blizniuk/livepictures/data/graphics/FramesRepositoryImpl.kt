@@ -1,8 +1,7 @@
 package com.blizniuk.livepictures.data.graphics
 
-import android.graphics.Color
-import android.graphics.PointF
-import androidx.core.graphics.ColorUtils
+import android.content.Context
+import android.database.Cursor
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -10,15 +9,10 @@ import androidx.paging.map
 import com.blizniuk.livepictures.data.db.FrameDao
 import com.blizniuk.livepictures.domain.graphics.AutoFrameBuilder
 import com.blizniuk.livepictures.domain.graphics.FramesRepository
+import com.blizniuk.livepictures.domain.graphics.GifExporter
 import com.blizniuk.livepictures.domain.graphics.entity.Frame
-import com.blizniuk.livepictures.domain.graphics.entity.Point
-import com.blizniuk.livepictures.domain.graphics.entity.cmd.CircleShapeCmdData
-import com.blizniuk.livepictures.domain.graphics.entity.cmd.DrawCmdData
-import com.blizniuk.livepictures.domain.graphics.entity.cmd.SquareShapeCmdData
-import com.blizniuk.livepictures.domain.graphics.entity.cmd.TriangleShapeCmdData
 import com.blizniuk.livepictures.domain.settings.AppSettings
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
-import com.blizniuk.livepictures.util.GeomUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -27,11 +21,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.math.cos
-import kotlin.math.max
-import kotlin.math.min
 
 class FramesRepositoryImpl(
+    private val context: Context,
     private val frameDao: FrameDao,
     private val json: Json,
     private val settingsRepository: SettingsRepository
@@ -172,7 +164,7 @@ class FramesRepositoryImpl(
         return mapRawData(frameDb.id, frameDb.index, frameDb.data)
     }
 
-    private fun mapRawData(id: Long, index: Long, data: String): Frame {
+    fun mapRawData(id: Long, index: Long, data: String): Frame {
         val frameData = deserializeFrameData(data)
 
         return Frame(
@@ -202,7 +194,7 @@ class FramesRepositoryImpl(
         return json.decodeFromString<FrameData>(data)
     }
 
-    private suspend fun getAppSettings(): AppSettings {
+    suspend fun getAppSettings(): AppSettings {
         return settingsRepository.getSetting()
     }
 
@@ -214,6 +206,9 @@ class FramesRepositoryImpl(
         frameDao.batchInsert(frames)
     }
 
+    fun getFramesCursor(): Cursor {
+        return frameDao.getFramesCursor()
+    }
 
     override fun autoBuilder(
         canvasWidth: Float,
@@ -221,5 +216,9 @@ class FramesRepositoryImpl(
         count: Int
     ): AutoFrameBuilder {
         return AutoFrameBuilderImpl(this, canvasWidth, canvasHeight, count)
+    }
+
+    override fun getGifExporter(): GifExporter {
+        return GifExporterImpl(this, context)
     }
 }

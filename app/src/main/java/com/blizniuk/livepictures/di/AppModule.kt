@@ -49,11 +49,13 @@ class AppModule {
     @Singleton
     @Provides
     fun providesFramesRepository(
+        @ApplicationContext context: Context,
         appDatabase: AppDatabase,
         json: Json,
         settingsRepository: SettingsRepository
     ): FramesRepository {
         return FramesRepositoryImpl(
+            context = context,
             frameDao = appDatabase.framesDao(),
             json = json,
             settingsRepository = settingsRepository

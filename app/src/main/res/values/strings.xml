@@ -45,6 +45,7 @@
 
     <string name="toast_new_frame_created">New frame is created</string>
     <string name="toast_frame_duplicated">Current frame is duplicated</string>
+    <string name="toast_export_successful">Exported to: %s</string>
 
     <string name="frame_duration_title">Frame duration</string>
     <string name="frame_duration_duration">Duration: %sms</string>
@@ -55,5 +56,6 @@
 
     <string name="loader_generating">Generation…</string>
     <string name="loader_exporting">Exporting…</string>
+
 
 </resources>
