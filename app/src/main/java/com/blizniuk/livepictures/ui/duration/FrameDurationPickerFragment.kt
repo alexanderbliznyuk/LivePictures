@@ -80,7 +80,7 @@ class FrameDurationPickerFragment : BottomSheetDialogFragment() {
 
     companion object {
         private const val MaxDuration = 2000
-        private const val MinDuration = 8
+        private const val MinDuration = 16
 
         fun newInstance(): FrameDurationPickerFragment {
             return FrameDurationPickerFragment()

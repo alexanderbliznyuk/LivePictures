@@ -22,7 +22,7 @@ class AutoFrameBuilderImpl(
 ) : AutoFrameBuilder {
     private val canvasCenter = Point(canvasWidth / 2, canvasHeight / 2)
 
-    override suspend fun start() {
+    override suspend fun build() {
         var index = 0
         var lastIndex = framesRepository.getLastIndex()
         val lastFrame = framesRepository.getLastFrame()

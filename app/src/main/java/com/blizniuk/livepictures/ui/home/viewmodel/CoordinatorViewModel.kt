@@ -279,7 +279,7 @@ class CoordinatorViewModel @Inject constructor(
                 dismissLoader()
             }
             saveCurrentFrame()
-            framesRepository.autoBuilder(canvasWidth, canvasHeight, count).start()
+            framesRepository.autoBuilder(canvasWidth, canvasHeight, count).build()
             dismissLoader()
         }
     }
