@@ -1,0 +1,58 @@
+<resources>
+    <string name="frame_list_title">Список Кадров</string>
+    <string name="frame_list_item_title">Кадр #%s</string>
+
+    <string name="tooltip_undo">Отменить</string>
+    <string name="tooltip_redo">Повторить</string>
+    <string name="tooltip_delete_frame">Удалить кадр</string>
+    <string name="tooltip_new_frame">Новый кадр</string>
+    <string name="tooltip_show_frames">Список кадров</string>
+    <string name="tooltip_start_animation">Начать анимацию</string>
+    <string name="tooltip_stop_animation">Остановить анимацию</string>
+    <string name="tooltip_tool_pencil">Карандаш</string>
+    <string name="tooltip_tool_erase">Ластик</string>
+    <string name="tooltip_tool_shape_picker">Выбор фигуры</string>
+    <string name="tooltip_tool_color_picker">Выбор цвета</string>
+    <string name="tooltip_tool_cmd_list">Список команд отрисовки кадра</string>
+    <string name="tooltip_next_frame">Следующий кадр</string>
+    <string name="tooltip_prev_frame">Предыдущий кадр</string>
+    <string name="tooltip_more_menu">Дополнительные функции</string>
+    <string name="tooltip_confirm_changes">Подтвердить изменения</string>
+    <string name="tooltip_discard_changes">Отменить изменения</string>
+    <string name="tooltip_delete_command">Удалить команду</string>
+
+    <string name="more_animation_speed">Скорость анимации</string>
+    <string name="more_duplicate_frame">Скопировать кадр</string>
+    <string name="more_export">Экспорт GIF</string>
+    <string name="more_generate">Генерация кадров</string>
+    <string name="more_delete_all">Удалить все карды</string>
+
+    <string name="tooltip_shape_square">Квадрат</string>
+    <string name="tooltip_shape_circle">Окружность</string>
+    <string name="tooltip_shape_triangle">Треугольник</string>
+
+    <string name="tooltip_shape_square_filled">Заполненный квадрат</string>
+    <string name="tooltip_shape_circle_filled">Заполненный круг</string>
+    <string name="tooltip_shape_triangle_filled">Заполенный треугольник</string>
+
+    <string name="color_picker_selected_color">Выбранный цвет:</string>
+    <string name="color_picker_button_submit">Подтвердить</string>
+
+    <string name="cmd_list_title">Список команд отрисовки</string>
+    <string name="cmd_list_empty">Ёще ничего не нарисовано</string>
+
+    <string name="toast_new_frame_created">Новый кадр создан</string>
+    <string name="toast_frame_duplicated">Текущий кадр скопирован</string>
+    <string name="toast_export_successful">Сохранено: %s</string>
+
+    <string name="frame_duration_title">Продолжительность кадра</string>
+    <string name="frame_duration_duration">Продолжительность: %sмс</string>
+
+    <string name="dialog_frame_builder_edit_hint">Введитель кольчество кадров</string>
+    <string name="dialog_frame_builder_message">Генерация большого числа кадров может занять много времени и места. Общее количество кадров не должно превышать Int.MAX_VALUE, т.к. индекс курсора базы данных SQL имеет тип Int</string>
+    <string name="dialog_frame_builder_input_error">Неверный ввод</string>
+
+    <string name="loader_generating">Генерация…</string>
+    <string name="loader_exporting">Экпорт…</string>
+
+</resources>
