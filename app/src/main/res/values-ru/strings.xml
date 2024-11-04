@@ -44,6 +44,7 @@
     <string name="toast_new_frame_created">Новый кадр создан</string>
     <string name="toast_frame_duplicated">Текущий кадр скопирован</string>
     <string name="toast_export_successful">Сохранено: %s</string>
+    <string name="toast_export_unsuccessful">Ошибка: %s</string>
 
     <string name="frame_duration_title">Продолжительность кадра</string>
     <string name="frame_duration_duration">Продолжительность: %sмс</string>

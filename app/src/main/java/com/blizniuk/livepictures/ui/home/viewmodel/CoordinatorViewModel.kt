@@ -17,6 +17,7 @@ import com.blizniuk.livepictures.ui.home.state.FrameCounterState
 import com.blizniuk.livepictures.ui.home.state.LoaderUI
 import com.blizniuk.livepictures.ui.home.state.ToastUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -309,16 +311,27 @@ class CoordinatorViewModel @Inject constructor(
 
             withContext(Dispatchers.IO) {
                 val exporter = framesRepository.getGifExporter()
-                val path = exporter.export(width, height)
-                if (path != null) {
+                try {
+                    val path = exporter.export(width, height)
+                    if (path != null) {
+                        toasts.tryEmit(
+                            ToastUi.PlainRes(
+                                resId = R.string.toast_export_successful,
+                                params = arrayOf(path),
+                                duration = Toast.LENGTH_LONG,
+                            )
+                        )
+                    }
+                } catch (e: IOException) {
                     toasts.tryEmit(
                         ToastUi.PlainRes(
-                            resId = R.string.toast_export_successful,
-                            params = arrayOf(path),
+                            resId = R.string.toast_export_unsuccessful,
+                            params = arrayOf(e.toString()),
                             duration = Toast.LENGTH_LONG,
                         )
                     )
                 }
+
             }
 
             dismissLoader()
