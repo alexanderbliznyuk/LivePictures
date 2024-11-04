@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.lifecycle.lifecycleScope
 import com.blizniuk.livepictures.R
 import com.blizniuk.livepictures.databinding.ActivityMainBinding
@@ -126,7 +129,8 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             shapePicker.isActivated = tool in shapesIds
-                            penThicknessPicker.isVisible = tool == ToolId.Pencil || tool in shapesIds
+                            penThicknessPicker.isVisible =
+                                tool == ToolId.Pencil || tool in shapesIds
                             eraseThicknessPicker.isVisible = tool == ToolId.Erase
                         }
                 }
@@ -151,7 +155,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     private fun initLoader() {
@@ -421,27 +424,51 @@ class MainActivity : AppCompatActivity() {
     private fun showFrameGeneratorDialog() {
         val dialogBinding = DialogFrameBuilderBinding.inflate(layoutInflater)
 
-        AlertDialog.Builder(this)
-            .setView(dialogBinding.root)
-            .setTitle(R.string.more_generate)
-            .setMessage(R.string.dialog_frame_builder_message)
-            .setPositiveButton(android.R.string.ok) { dialog, id ->
-                val count = dialogBinding.countInput.text.toString().toIntOrNull()
-                if (count == null || count <= 0) {
-                    Toast.makeText(
-                        this,
-                        R.string.dialog_frame_builder_input_error,
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    viewModel.generateFrames(
-                        binding.canvasView.width.toFloat(),
-                        binding.canvasView.height.toFloat(),
-                        count
-                    )
+        dialogBinding.apply {
+            val dialog = AlertDialog.Builder(this@MainActivity)
+                .setView(root)
+                .setTitle(R.string.more_generate)
+                .setMessage(R.string.dialog_frame_builder_message)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    handleDialogInput(countInput.text.toString())
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ -> }
+                .create()
+
+            countInput.setOnFocusChangeListener { _, _ ->
+                countInput.postDelayed(250) {
+                    val service = getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+                    service?.showSoftInput(countInput, InputMethodManager.SHOW_IMPLICIT)
                 }
             }
-            .setNegativeButton(android.R.string.cancel) { dialog, id -> }
-            .show()
+            countInput.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    handleDialogInput(countInput.text.toString())
+                    dialog.dismiss()
+                    true
+                } else {
+                    false
+                }
+            }
+            countInput.requestFocus()
+            dialog.show()
+        }
+    }
+
+    private fun handleDialogInput(text: String) {
+        val count = text.toIntOrNull()
+        if (count == null || count <= 0) {
+            Toast.makeText(
+                this,
+                R.string.dialog_frame_builder_input_error,
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            viewModel.generateFrames(
+                binding.canvasView.width.toFloat(),
+                binding.canvasView.height.toFloat(),
+                count
+            )
+        }
     }
 }

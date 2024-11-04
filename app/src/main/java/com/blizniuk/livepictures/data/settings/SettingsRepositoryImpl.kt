@@ -1,6 +1,5 @@
 package com.blizniuk.livepictures.data.settings
 
-import android.graphics.Color
 import com.blizniuk.livepictures.data.db.SettingsDao
 import com.blizniuk.livepictures.domain.settings.AppSettings
 import com.blizniuk.livepictures.domain.settings.SettingsRepository
