@@ -260,6 +260,7 @@ class CoordinatorViewModel @Inject constructor(
         generateJob?.cancel()
         generateJob = viewModelScope.launch {
             showLoader("GENERATING")
+            saveCurrentFrame()
             framesRepository.autoBuilder(canvasWidth, canvasHeight, count).start()
             dismissLoader()
         }

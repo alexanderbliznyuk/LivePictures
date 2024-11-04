@@ -6,8 +6,3 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class LivePicturesApplication : Application()
 
-
-fun main() {
-
-}
-
