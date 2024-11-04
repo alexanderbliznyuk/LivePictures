@@ -38,13 +38,13 @@ class CoordinatorViewModel @Inject constructor(
     private val framesRepository: FramesRepository,
 ) : ViewModel(), DefaultLifecycleObserver {
 
-
     val toasts = MutableSharedFlow<Int>(
         extraBufferCapacity = 2,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
+
     val selectedTool = MutableStateFlow(ToolId.Pencil)
-    private val _loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI(""))
+    private val _loader: MutableStateFlow<LoaderUI?> = MutableStateFlow(LoaderUI())
     val loader = _loader
         .debounce(200L)
 
@@ -194,7 +194,7 @@ class CoordinatorViewModel @Inject constructor(
 
     fun deleteAllFrames() {
         viewModelScope.launch {
-            showLoader("")
+            showLoader()
             framesRepository.deleteAllFrames()
             dismissLoader()
         }
@@ -270,7 +270,10 @@ class CoordinatorViewModel @Inject constructor(
     fun generateFrames(canvasWidth: Float, canvasHeight: Float, count: Int) {
         generateJob?.cancel()
         generateJob = viewModelScope.launch {
-            showLoader("GENERATING")
+            showLoader(R.string.loader_generating) {
+                generateJob?.cancel()
+                dismissLoader()
+            }
             saveCurrentFrame()
             framesRepository.autoBuilder(canvasWidth, canvasHeight, count).start()
             dismissLoader()
@@ -299,14 +302,13 @@ class CoordinatorViewModel @Inject constructor(
         return frame
     }
 
-    private fun showLoader(text: String) {
-        _loader.value = LoaderUI(text)
+    private fun showLoader(textId: Int = 0, cancelAction: (() -> Unit)? = null) {
+        _loader.value = LoaderUI(textId, cancelAction)
     }
 
     private fun dismissLoader() {
         _loader.value = null
     }
-
 
     private fun Frame.toBuilder(): FrameBuilder {
         val builder = FrameBuilder(this)

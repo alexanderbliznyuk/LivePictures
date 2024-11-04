@@ -57,6 +57,12 @@ class MainActivity : AppCompatActivity() {
             ViewCompat.setOnApplyWindowInsetsListener(main) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                loaderContent.setPadding(
+                    systemBars.left,
+                    systemBars.top,
+                    systemBars.right,
+                    systemBars.bottom
+                )
                 insets
             }
 
@@ -161,8 +167,20 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             repeatOnStart {
                 launch {
-                    viewModel.loader.collect {
-                        loaderContent.isVisible = it != null
+                    viewModel.loader.collect { loaderUi ->
+                        loaderContent.isVisible = loaderUi != null
+                        loaderUi?.apply {
+                            loaderText.text = if (this.textId != 0) {
+                                getString(textId)
+                            } else {
+                                null
+                            }
+
+                            loaderCancel.isVisible = loaderUi.cancelAction != null
+                            loaderCancel.setOnClickListener {
+                                cancelAction?.invoke()
+                            }
+                        }
                     }
                 }
 

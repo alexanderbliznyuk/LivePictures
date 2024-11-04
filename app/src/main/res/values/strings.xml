@@ -53,5 +53,7 @@
     <string name="dialog_frame_builder_message">Entering large number will consume a lot of storage. The total amount of frames should be less than Int.MAX_VALUE since database cursor can operate only with Int index</string>
     <string name="dialog_frame_builder_input_error">Wrong input</string>
 
+    <string name="loader_generating">Generation…</string>
+    <string name="loader_exporting">Exporting…</string>
 
 </resources>
